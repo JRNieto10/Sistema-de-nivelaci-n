@@ -25,7 +25,7 @@ class Usuarios(ABC):
         self._correo = correo_n
 
     
-    def inciar_sesion(self):
+    def iniciar_sesion(self):
         print(f"El {self.rol} {self.nombre} ha iniciado sesion")
 
     def cerrar_sesion(self):
@@ -55,14 +55,6 @@ class Docente(Usuarios):
     def __init__(self,nombre,apellido,correo,contrasena,rol):
         super().__init__(nombre,apellido,correo,contrasena,rol)
 
-    def crear_usuario(self):
-        return super().crear_usuario()
-
-    def iniciar_sesion(self):
-        return super().inciar_sesion()
-
-    def cerrar_sesion(self):
-        return super().cerrar_sesion()
 
     def actualizar_datos(self):
         return super().actualizar_datos()
@@ -75,11 +67,6 @@ class Estudiante(Usuarios):
     def __init__(self,nombre,apellido,correo,contrasena,rol):
         super().__init__(nombre,apellido,correo,contrasena,rol)
 
-    def iniciar_sesion(self):
-        return super().inciar_sesion()
-
-    def cerrar_sesion(self):
-        return super().cerrar_sesion()
 
     def actualizar_datos(self):
         return super().actualizar_datos()
@@ -93,11 +80,6 @@ class Personal(Usuarios):
         super().__init__(nombre,apellido,correo,contrasena,rol)
     
 
-    def iniciar_sesion(self):
-        return super().inciar_sesion()
-
-    def cerrar_sesion(self):
-        return super().cerrar_sesion()
 
     def actualizar_datos(self):
         return super().actualizar_datos()
