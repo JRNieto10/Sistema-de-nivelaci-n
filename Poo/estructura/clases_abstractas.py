@@ -24,13 +24,6 @@ class Usuarios(ABC):
     def correo(self,correo_n):
         self._correo = correo_n
 
-    
-    def inciar_sesion(self):
-        print(f"El {self.rol} {self.nombre} ha iniciado sesion")
-
-    def cerrar_sesion(self):
-        print(f"El {self.rol} {self.nombre} ha cerrado sesion ")
-
     @abstractmethod
     def actualizar_datos(self):
         print(f"El {self.rol} {self.nombre} ha actualizado sus datos ")
@@ -40,15 +33,6 @@ class Usuarios(ABC):
     def cambiar_contraseña(self):
         print(f"El {self.rol} {self.nombre} ha cambiado su contraseña ")
 
-    def crear_usuario(self):
-        perfil= {
-            "nombre": self.nombre,
-            "apellido": self.apellido,
-            "correo" : self.correo,
-            "contraseña" : self.contrasena
-            }
-        print(f"El {self.rol} {self.nombre} ha creado su usuario de manera exitosa")
-        return perfil
 
 
     
