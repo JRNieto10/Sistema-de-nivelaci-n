@@ -7,11 +7,14 @@ class Asignatura:
         self.modalidad = modalidad
 
     def obtener_nombre(self):
-        pass
+        return self.nombre
 
     def obtener_creditos(self):
-        pass
+        return self.creditos
 
     def calcular_carga_horaria(self):
-        pass
-    
+        # cada credito equivale a una hora de clase a la semana
+        return self.creditos * self.horas
+
+    def __str__(self):
+        return f"{self.nombre} ({self.creditos} creditos)"
