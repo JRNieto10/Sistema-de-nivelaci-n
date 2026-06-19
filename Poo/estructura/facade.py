@@ -8,7 +8,6 @@ class Facada_json:
                 datos_cargados = json.load(f)
                 return datos_cargados
         except Exception:
-            print("No existe ningun usuario registrado por el momento")
             return False
 
     def guardar_datos(self,archivo,datos_cargados):

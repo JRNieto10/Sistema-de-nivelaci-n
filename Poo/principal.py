@@ -65,9 +65,9 @@ alm.obtener(datos)
 datos = ingreso.agregar(2)
 usuario = factory.crear_usuario(datos)
 alm.obtener(datos)
-login.iniciar_sesion("a", "e")
+login.iniciar_sesion("a", "a")
 login.cerrar_sesion()
-login.iniciar_sesion("a","a")
+login.iniciar_sesion("a","1234")
 login.cerrar_sesion()
 
 

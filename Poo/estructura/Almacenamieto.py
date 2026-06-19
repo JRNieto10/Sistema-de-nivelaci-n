@@ -25,9 +25,8 @@ class Almacenamiento_Usuarios:
         return False
         
     def obtener(self,user):
-        try:
-            datos_cargados = self.json.cargar_datos(self.archivo)
-        except Exception:
+        datos_cargados = self.json.cargar_datos(self.archivo)
+        if not datos_cargados:
             datos_cargados= []
         for i in datos_cargados:
             if user == i:
