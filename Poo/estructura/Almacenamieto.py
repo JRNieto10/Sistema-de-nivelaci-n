@@ -1,9 +1,10 @@
-import json
+from estructura.facade import *
 
 class Almacenamiento_Usuarios:
 
     def __init__(self,archivo = "users.json"):
         self.archivo = archivo
+        self.json = Facada_json()
 
     def comprobar_duplicados(self,user,lista):
         for usuario in lista:
@@ -13,8 +14,7 @@ class Almacenamiento_Usuarios:
     
     def verificar_credenciales(self,correo_ingresado,contrasena_ingresada):
         try:
-            with open(self.archivo,"r", encoding="utf-8") as archivo:
-                datos_cargados = json.load(archivo)
+            datos_cargados = self.json.cargar_datos(self.archivo)
         except Exception:
             print("No existe ningun usuario registrado por el momento")
             return False
@@ -25,10 +25,8 @@ class Almacenamiento_Usuarios:
         return False
         
     def obtener(self,user):
-        try:
-            with open(self.archivo,"r", encoding="utf-8") as archivo:
-                datos_cargados = json.load(archivo)
-        except Exception:
+        datos_cargados = self.json.cargar_datos(self.archivo)
+        if not datos_cargados:
             datos_cargados= []
         for i in datos_cargados:
             if user == i:
@@ -40,8 +38,7 @@ class Almacenamiento_Usuarios:
         
         datos_cargados.append(user)
         try:
-            with open(self.archivo,"w",encoding="utf-8") as archivo:
-                json.dump(datos_cargados, archivo, indent=4, ensure_ascii=False)
+            self.json.guardar_datos(self.archivo,datos_cargados)
             print("exito")
-        except Exception:
-            print("Ocurrio un fallo inseperado")
+        except Exception as e:
+            print("Ocurrio un fallo inseperado",e)

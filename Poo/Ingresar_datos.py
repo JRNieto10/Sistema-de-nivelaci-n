@@ -4,8 +4,6 @@
 #         return True
 #     else:        return False
 
-
-
 class Ingreso_datos:
         def __init__(self):
                 self.roles=["Docente","Personal","Estudiante"]
