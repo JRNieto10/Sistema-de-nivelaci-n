@@ -1,4 +1,4 @@
-from estructura.Almacenamieto import *
+from estructura.AlmacenamietoUsuarios import *
 
 class Autenticacion:
     def __init__(self,almacenamiento : Almacenamiento_Usuarios):

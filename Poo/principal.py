@@ -50,7 +50,7 @@
 # alm.obtener(p3)
 
 from estructura.fabrica_usuarios import FabricaUsuarios
-from estructura.Almacenamieto import Almacenamiento_Usuarios
+from estructura.AlmacenamietoUsuarios import Almacenamiento_Usuarios
 from Ingresar_datos import *
 from estructura.Autenticacion import *
 
@@ -67,7 +67,7 @@ usuario = factory.crear_usuario(datos)
 alm.obtener(datos)
 login.iniciar_sesion("a", "a")
 login.cerrar_sesion()
-login.iniciar_sesion("a","1234")
+login.iniciar_sesion("p","123")
 login.cerrar_sesion()
 
 
