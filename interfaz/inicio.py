@@ -23,6 +23,7 @@ class Inicio(ctk.CTk):
             self.loginn.crear_boton_volver()
             self.loginn.crear_entrada_cedula()
             self.loginn.crear_entrada_contraseña()
+            self.loginn.combox_rol()
             self.loginn.boton_enviar()
         else:
             self.loginn.deiconify()
@@ -34,7 +35,7 @@ class Inicio(ctk.CTk):
 
     def boton_ir_eleccion(self):
         self.bton_ir_eleccion = ctk.CTkButton(
-            self, text="Ir a Elección", command=self.ir_eleccion
+            self, text="Registrarse", command=self.ir_eleccion
         )
         self.bton_ir_eleccion.pack()
         

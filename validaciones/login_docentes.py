@@ -1,51 +1,6 @@
-docentes = [
-    {
-        "cedula": "111111111",
-        "nombre": "pepito",
-        "apellido": "garcia",
-        "correo": "pepito@uleam.edu",
-        "contrasena": "pepito123",
-        "rol": "docente",
-        "fecha_registro": "2026-06-26T19:07:21.272519"
-    },
-    {
-        "cedula": "222222222",
-        "nombre": "juanito",
-        "apellido": "lopez1",
-        "correo": "juanito@uleam.edu",
-        "contrasena": "juanito123",
-        "rol": "docente",
-        "fecha_registro": "2026-06-26T19:07:21.273263"
-    },
-    {
-        "cedula": "333333333",
-        "nombre": "changuin",
-        "apellido": "lopez2",
-        "correo": "changuin@uleam.edu",
-        "contrasena": "changuin123",
-        "rol": "docente",
-        "fecha_registro": "2026-06-26T19:07:21.294666"
-    },
-    {
-        "cedula": "444444444",
-        "nombre": "mari",
-        "apellido": "fernandez",
-        "correo": "mari@uleam.edu",
-        "contrasena": "mari123",
-        "rol": "docente",
-        "fecha_registro": "2026-06-26T19:07:21.295670"
-    },
-    {
-        "cedula": "666666666",
-        "nombre": "carlitos",
-        "apellido": "sanchez",
-        "correo": "carlitos@uleam.edu",
-        "contrasena": "carlitos123",
-        "rol": "docente",
-        "fecha_registro": "2026-06-26T19:07:21.309361"
-    }
-]
-
+import json
+with open('Datos/docentes.json', 'r', encoding='utf-8') as archivo:
+    docentes = json.load(archivo)
 
 class login_docentes:
     def __init__(self, cedula, contrasena):

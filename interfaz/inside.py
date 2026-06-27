@@ -22,3 +22,9 @@ class Inside(ctk.CTkToplevel):
         self.login.label_resultado.configure(text="") 
         
         
+    def label_bienvenido(self):
+        var=self.login.combox_rol.get()
+        self.label_resultado= ctk.CTkLabel(self, text=var)
+        self.label_resultado.pack(pady=20)
+        
+        

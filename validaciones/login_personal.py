@@ -1,5 +1,5 @@
 import json
-with open('Datos/estudiantes.json', 'r', encoding='utf-8') as archivo:
+with open('Datos/personal_administrativo.json', 'r', encoding='utf-8') as archivo:
     personal = json.load(archivo)
 
 class login_personal:
