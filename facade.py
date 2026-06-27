@@ -167,8 +167,8 @@ class FacadeSistemaAcademico:
     # REGISTRO Y GESTIÓN DE USUARIOS
     # -----------------------------------------------------------------------
 
-    def registrar_usuario(self, nombre: str, cedula: str, apellido: str,
-                          correo: str, contrasena: str, rol: str) -> tuple[bool, str]:
+    def registrar_usuario(self, nombre: str = None, cedula: str = None, apellido: str = None,
+                          correo: str = None, contrasena: str = None, rol: str = None) -> tuple[bool, str]:
         """
         Registra un usuario nuevo validando primero que su cédula esté permitida.
         Wagner: conectar al botón "Crear cuenta" de la pantalla de registro.
@@ -206,13 +206,13 @@ class FacadeSistemaAcademico:
         return False, "Error al guardar. Intente nuevamente."
 
     def crear_administrativo(self, nombre, cedula, apellido, correo, contrasena):
-        return self.registrar_usuario(nombre, cedula, apellido, correo, contrasena, "administrativo")
+        return self.registrar_usuario(nombre, cedula, apellido, correo, contrasena, "Administrador")
 
     def crear_docente(self, nombre, cedula, apellido, correo, contrasena):
-        return self.registrar_usuario(nombre, cedula, apellido, correo, contrasena, "docente")
+        return self.registrar_usuario(nombre, cedula, apellido, correo, contrasena, "Docente")
 
     def crear_estudiante(self, nombre, cedula, apellido, correo, contrasena):
-        return self.registrar_usuario(nombre, cedula, apellido, correo, contrasena, "estudiante")
+        return self.registrar_usuario(nombre, cedula, apellido, correo, contrasena, "Estudiante")
 
     # -----------------------------------------------------------------------
     # AUTENTICACIÓN
@@ -226,7 +226,7 @@ class FacadeSistemaAcademico:
         Ejemplo de uso en CustomTkinter:
             if sistema.login(cedula_entry.get(), pass_entry.get()):
                 rol = sistema.obtener_usuario_actual()["rol"]
-                if rol == "administrativo":
+                if rol == "Administrador":
                     abrir_ventana_admin()
                 elif rol == "docente":
                     abrir_ventana_docente()
@@ -305,6 +305,8 @@ class FacadeSistemaAcademico:
 
     def asignar_docente_a_materia(self, curso, docente, materia):
         curso.agregar_docente(docente, materia)
+        
+
 
     def crear_paralelos(self, nombre_curso_base: str, cantidad_paralelos: int, curso) -> list:
         """

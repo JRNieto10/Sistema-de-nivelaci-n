@@ -6,6 +6,7 @@ if __name__ == "__main__":
 
 
     
-    app.crear_boton_registro()
+
+    app.boton_ir_eleccion()
 
     app.final()

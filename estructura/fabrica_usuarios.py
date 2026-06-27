@@ -11,7 +11,7 @@ class FabricaUsuarios:
             return Docente(user["nombre"],user["cedula"],user["apellido"],user["correo"],user["contrasena"],user["rol"])
         elif user["rol"] == "estudiante":
             return Estudiante(user["nombre"],user["cedula"],user["apellido"],user["correo"],user["contrasena"],user["rol"])
-        elif user["rol"] == "personal" or user["rol"] == "administrativo":
+        elif user["rol"] == "personal" or user["rol"] == "administrador":
             return Personal(user["nombre"],user["cedula"],user["apellido"],user["correo"],user["contrasena"],user["rol"])
         else:
             raise ValueError(f"El rol '{user['rol']}' no existe en el sistema.")

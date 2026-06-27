@@ -37,7 +37,7 @@ class GestorAlmacenamiento:
             ruta = self.ruta_estudiantes
         elif tipo_usuario.lower() == "docente":
             ruta = self.ruta_docentes
-        elif tipo_usuario.lower() == "personal" or tipo_usuario.lower() == "administrativo":
+        elif tipo_usuario.lower() == "personal" or tipo_usuario.lower() == "administrador":
             ruta = self.ruta_personal
         else:
             raise ValueError("Tipo de usuario no valido")
@@ -57,7 +57,7 @@ class GestorAlmacenamiento:
             ruta = self.ruta_estudiantes
         elif tipo_usuario.lower() == "docente":
             ruta = self.ruta_docentes
-        elif tipo_usuario.lower() == "personal" or tipo_usuario.lower() == "administrativo":
+        elif tipo_usuario.lower() == "personal" or tipo_usuario.lower() == "administrador":
             ruta = self.ruta_personal
         else:
             raise ValueError("Tipo de usuario no valido")

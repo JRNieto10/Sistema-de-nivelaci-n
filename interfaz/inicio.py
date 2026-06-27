@@ -1,7 +1,6 @@
 import customtkinter as ctk
 from interfaz.login import Login
-from interfaz.registro import Registro
-
+from interfaz.eleccion import Eleccion
 
 class Inicio(ctk.CTk):
     def __init__(self):
@@ -9,6 +8,7 @@ class Inicio(ctk.CTk):
 
         self.loginn = None
         self.registroo = None
+        self.eleccionn = None
 
         self.geometry("900x500")
         self.title("Principal")
@@ -29,22 +29,24 @@ class Inicio(ctk.CTk):
 
         self.withdraw()
 
-    def crear_boton_registro(self):
-        self.bton_registro = ctk.CTkButton(
-            self, text="Registrarse", command=self.abrir_registro
-        )
-        self.bton_registro.pack()
-
-    def abrir_registro(self):
-        if self.registroo is None or not self.registroo.winfo_exists():
-            self.registroo = Registro(self)
-            self.registroo.crear_boton_volver()
-            self.registroo.input_cedula()
-            self.registroo.boton_validar_cedula()
-        else:
-            self.registroo.deiconify()
-
-        self.withdraw()
-
     def final(self):
         self.mainloop()
+
+    def boton_ir_eleccion(self):
+        self.bton_ir_eleccion = ctk.CTkButton(
+            self, text="Ir a Elección", command=self.ir_eleccion
+        )
+        self.bton_ir_eleccion.pack()
+        
+    def ir_eleccion(self):
+        if self.eleccionn is None or not self.eleccionn.winfo_exists():
+            self.eleccionn = Eleccion(self)
+            self.eleccionn.boton_volver()
+            self.eleccionn.combobox_rol()
+     
+
+           
+        else:
+            self.eleccionn.deiconify()
+
+        self.withdraw()

@@ -3,9 +3,9 @@ from validaciones.permitidos_cedula import encontrar_cedula
 from interfaz.registro2 import Registro2
 
 class Registro(ctk.CTkToplevel):
-    def __init__(self, inicio):
-        super().__init__(inicio)
-        self.inicio = inicio
+    def __init__(self, eleccion):
+        super().__init__(eleccion)
+        self.eleccion = eleccion
         self.geometry("900x500")
         self.title("Registro")
 
@@ -22,12 +22,16 @@ class Registro(ctk.CTkToplevel):
     
     
     def crear_boton_volver(self):
-        self.bton_volver = ctk.CTkButton(self, text="Volver", command=self.volver_inicio)
+        self.bton_volver = ctk.CTkButton(self, text="Volver", command=self.volver_eleccion)
         self.bton_volver.pack()
 
-    def volver_inicio(self):
+    def volver_eleccion(self):
         self.destroy()
-        self.inicio.deiconify()
+        self.eleccion.deiconify()
+        self.eleccion.combo_rol.set("")
+        self.eleccion.label_rol.configure(text="")  
+        self.eleccion.bton_continuar.pack_forget()
+    
 
     def input_cedula(self):
         self.label_cedula = ctk.CTkLabel(self, text="Ingrese su cédula:")
@@ -40,12 +44,14 @@ class Registro(ctk.CTkToplevel):
         self.bton_validar_cedula.pack()
 
     def validar_cedula(self):
+        rol = self.eleccion.combo_rol.get()
         cedula = self.entry_cedula.get()
-        encontrar = encontrar_cedula(cedula)
-        if encontrar.buscar_cedula() != "No encontrada":
+        encontrar = encontrar_cedula(cedula,rol)
+        if encontrar.buscar_cedula() != "No encontrada" and len(cedula) >= 3:
             self.mostrar_resultado("Cédula válida", "green")
             self.boton_siguiente_registro()  
-            self.mostrar_resultado("Cédula inválida", "red")
+        else:
+            self.mostrar_resultado("Cédula inválida, no encontrada en " + rol, "red")
 
     def mostrar_resultado(self, mensaje, color):
         if self.label_resultado is None:
@@ -78,3 +84,8 @@ class Registro(ctk.CTkToplevel):
             self.registroo2.deiconify()
         
         self.withdraw()
+        
+    def mostrar_rol(self):
+        rol_seleccionado = self.eleccion.combo_rol.get()
+        self.label_rol = ctk.CTkLabel(self, text=f"Rol seleccionado: {rol_seleccionado}")
+        self.label_rol.pack(pady=10)

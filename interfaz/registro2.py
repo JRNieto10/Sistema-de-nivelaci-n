@@ -71,12 +71,8 @@ class Registro2(ctk.CTkToplevel):
         self.bton_guardar.pack()
         
     def guardar_datos(self):
-        self.estudiantes = []
-        estado, mensaje = self.sistema.crear_estudiante("",self.registro1.variable_cedula.get(), "", "", self.entry_contraseña1.get())
-        print(mensaje)
-        if estado:
-            from estructura.estudiantes import Estudiante
-            estudiante = Estudiante("", self.registro1.variable_cedula.get(), "", "", self.entry_contraseña1.get(),"estudiante")
-            self.estudiantes.append(estudiante)
-            self.mostrar_resultado("Datos guardados correctamente", "green")
-            
+        cedula = self.registro1.variable_cedula.get()
+        contraseña = self.entry_contraseña1.get()
+        rol = self.registro1.eleccion.combo_rol.get()
+        self.sistema.registrar_usuario(cedula=cedula, contrasena=contraseña, rol=rol.lower())
+        self.mostrar_resultado("Datos guardados correctamente", "green")
