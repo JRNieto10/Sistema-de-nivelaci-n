@@ -52,7 +52,7 @@
 from estructura.fabrica_usuarios import FabricaUsuarios
 from estructura.AlmacenamietoUsuarios import Almacenamiento_Usuarios
 from Ingresar_datos import *
-from estructura.Autenticacion import *
+from estructura.Autenticacion import * 
 
 factory = FabricaUsuarios()
 ingreso = Ingreso_datos()

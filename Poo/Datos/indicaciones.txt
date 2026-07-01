@@ -1,0 +1,2 @@
+En esta carpeta se guardaran todos los archivos json que serviran como almacenadores, 
+la ruta que se debe poner para que se guarden aqui es  "Poo/Datos/nombre_archivo.json"

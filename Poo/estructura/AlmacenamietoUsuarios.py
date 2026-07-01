@@ -2,12 +2,12 @@ from estructura.facade_json import Facada_json
 
 class Almacenamiento_Usuarios:
 
-    def __init__(self,archivo = "Poo/Datos/users.json"):
-        self.archivo = archivo
+    def __init__(self):
+        self.ruta = "Poo/Datos/users.json"
         self.json = Facada_json()
     
     def verificar_credenciales(self,correo_ingresado,contrasena_ingresada):
-        datos_cargados = self.json.cargar_datos(self.archivo)
+        datos_cargados = self.json.cargar_datos(self.ruta)
         if not datos_cargados:
             print("No existe ningun usuario registrado por el momento")
             return False
@@ -19,7 +19,7 @@ class Almacenamiento_Usuarios:
         
     def obtener(self,user):
         try:
-            if self.json.guardar_datos(self.archivo,'correo',user):
+            if self.json.guardar_datos(self.ruta,'correo',user):
                 print("exito")
             else: 
                 print( "Error ya existe este usuario")
