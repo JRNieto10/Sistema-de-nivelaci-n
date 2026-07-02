@@ -1,4 +1,7 @@
 # Importamos la clase que gestiona los horarios y los arch
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from estructura.Almacenamiento_horario import GuardarHorarios
 # =====================================================================
 # SIMULACIÓN DE LA CLASE PARALELO (Para que el main pueda crear objetos)

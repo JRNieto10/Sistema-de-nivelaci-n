@@ -1,36 +1,30 @@
-import json
+from estructura.Repositorio_json import JsonRepository
 
 class Facada_json:
-    
-    def cargar_datos(self,archivo):
-        try:
-            with open(archivo,"r", encoding="utf-8") as f:
-                datos_cargados = json.load(f)
-                return datos_cargados
-        except FileNotFoundError:
-            return []
-        
+    def __init__(self, ruta):
+        # Inyectamos la dependencia
+        self.repo = JsonRepository(ruta)
+
     @staticmethod
     def comprobar_duplicados(validacion, datos, lista):
-        for usuario in lista:
-            if usuario.get(validacion) == datos.get(validacion):
+        for item in lista:
+            if item.get(validacion) == datos.get(validacion):
                 return True
         return False
     
-    def guardar_datos(self, archivo, validacion, datos):
+    def guardar_datos(self, validacion, datos):
         if isinstance(datos, list):
-            return self.guardar_lista_datos(archivo, validacion, datos)
+            return self.guardar_lista_datos(validacion, datos)
 
-        datos_cargados = self.cargar_datos(archivo)
+        datos_cargados = self.repo.leer_todo()
+        
         if not self.comprobar_duplicados(validacion, datos, datos_cargados):
             datos_cargados.append(datos)
-            with open(archivo, "w", encoding="utf-8") as f:
-                json.dump(datos_cargados, f, indent=4, ensure_ascii=False)
-            return True
+            return self.repo.guardar_todo(datos_cargados)
         return False
     
-    def guardar_lista_datos(self, archivo, validacion, lista):
-        datos_cargados = self.cargar_datos(archivo)
+    def guardar_lista_datos(self, validacion, lista):
+        datos_cargados = self.repo.leer_todo()
         existentes = {item.get(validacion) for item in datos_cargados}
         nuevos = False
         
@@ -39,8 +33,7 @@ class Facada_json:
                 datos_cargados.append(dato)
                 existentes.add(dato.get(validacion))
                 nuevos = True
+                
         if nuevos:
-            with open(archivo, "w", encoding="utf-8") as f:
-                json.dump(datos_cargados, f, indent=4, ensure_ascii=False)
-            return True
+            return self.repo.guardar_todo(datos_cargados)
         return False

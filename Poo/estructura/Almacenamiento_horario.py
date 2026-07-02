@@ -3,7 +3,7 @@ from estructura.facade_json import Facada_json
 class GuardarHorarios:
     def __init__(self):
         self.ruta_paralelos = "Poo/Datos/paralelos.json"
-        self.json = Facada_json()
+        self.json = Facada_json(self.ruta_paralelos)
     
     def guardar_paralelos(self, paralelos):
         datos = []
@@ -20,9 +20,7 @@ class GuardarHorarios:
                 })
                 nombres_existentes.add(paralelo.nombre)
         
-
-
-        exito = self.json.guardar_datos(self.ruta_paralelos, 'id', datos)
+        exito = self.json.guardar_datos( 'id', datos)
 
         if exito:
             print("¡Archivo JSON actualizado con éxito!")
@@ -30,7 +28,7 @@ class GuardarHorarios:
             print("No se agregaron nuevos datos (todos los IDs ya existían en el archivo).")
     
     def cargar_paralelos(self):
-        return self.json.cargar_datos(self.ruta_paralelos)
+        return self.json.repo.leer_todo()
     
     def obtener_horario_paralelo(self, nombre_paralelo):
         paralelos = self.cargar_paralelos()
