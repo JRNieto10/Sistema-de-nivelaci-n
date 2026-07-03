@@ -1,30 +1,75 @@
 import json
+from datetime import datetime
 
 class Almacenamiento_Usuarios:
     def __init__(self):
         self.ruta_estudiantes = "Datos/estudiantes.json"
         self.ruta_docentes = "Datos/docentes.json"
         self.ruta_personal = "Datos/personal_administrativo.json"
+        self._crear_archivos_json()
+    
+    def _crear_archivos_json(self):
+        archivos = [
+            self.ruta_estudiantes,
+            self.ruta_docentes,
+            self.ruta_personal
+        ]
+        for archivo in archivos:
+            try:
+                with open(archivo, 'x', encoding='utf-8') as f:
+                    json.dump([], f, ensure_ascii=False, indent=4)
+            except FileExistsError:
+                pass
     
     def _cargar_datos(self, ruta_archivo):
         try:
             with open(ruta_archivo, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except FileNotFoundError:
+        except (FileNotFoundError, json.JSONDecodeError):
             return []
     
-    def verificar_credenciales(self, cedula, contrasena_ingresada):
-        archivos = [
-            (self.ruta_estudiantes, "estudiante"),
-            (self.ruta_docentes, "docente"),
-            (self.ruta_personal, "personal")
-        ]
+    def _guardar_datos(self, ruta_archivo, datos):
+        with open(ruta_archivo, 'w', encoding='utf-8') as f:
+            json.dump(datos, f, ensure_ascii=False, indent=4)
+    
+    def comprobar_duplicados(self, cedula, tipo_usuario):
+        if tipo_usuario.lower() == "estudiante":
+            ruta = self.ruta_estudiantes
+        elif tipo_usuario.lower() == "docente":
+            ruta = self.ruta_docentes
+        elif tipo_usuario.lower() == "personal" or tipo_usuario.lower() == "administrador":
+            ruta = self.ruta_personal
+        else:
+            raise ValueError("Tipo de usuario no valido")
         
-        for ruta, tipo in archivos:
-            usuarios = self._cargar_datos(ruta)
-            for usuario in usuarios:
-                if usuario.get('cedula') == cedula and usuario.get('contrasena') == contrasena_ingresada:
-                    usuario['tipo'] = tipo
-                    return usuario
+        usuarios = self._cargar_datos(ruta)
         
+        for usuario_existente in usuarios:
+            if usuario_existente.get('cedula') == cedula:
+                return True
         return False
+    
+    def agregar_usuario(self, usuario, tipo_usuario):
+        if self.comprobar_duplicados(usuario['cedula'], tipo_usuario):
+            return False
+        
+        if tipo_usuario.lower() == "estudiante":
+            ruta = self.ruta_estudiantes
+        elif tipo_usuario.lower() == "docente":
+            ruta = self.ruta_docentes
+        elif tipo_usuario.lower() == "personal" or tipo_usuario.lower() == "administrativo":
+            ruta = self.ruta_personal
+        else:
+            raise ValueError("Tipo de usuario no valido")
+        
+        usuarios = self._cargar_datos(ruta)
+        usuario['fecha_registro'] = datetime.now().isoformat()
+        usuarios.append(usuario)
+        self._guardar_datos(ruta, usuarios)
+        return True
+    def verificar_credenciales(self,cedula,contra):
+        ruta="Datos/estudiantes.json"
+        usuarios = self._cargar_datos(ruta)
+        for usuario_existente in usuarios:
+            if usuario_existente.get('cedula') == cedula and  usuario_existente.get('contrasena') == contra :
+                return usuario_existente

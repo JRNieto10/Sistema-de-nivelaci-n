@@ -1,8 +1,15 @@
 from .clases_abstractas import Usuarios
 
 class Docente(Usuarios):
-    def __init__(self,nombre,cedula,apellido,correo,contrasena,rol):
-        super().__init__(nombre,cedula,apellido,correo,contrasena,rol)
+    def __init__(self, nombre, cedula, apellido, correo, contrasena, rol):
+        super().__init__(nombre, cedula, apellido, correo, contrasena, rol)
+        self.horario = {
+            "lunes": [],
+            "martes": [],
+            "miércoles": [],
+            "jueves": [],
+            "viernes": []
+        }
 
     def crear_usuario(self):
         return super().crear_usuario()
@@ -18,3 +25,6 @@ class Docente(Usuarios):
 
     def cambiar_contraseña(self):
         print(f"El docente {self.nombre} ha cambiado su contraseña")
+    
+    def asignar_horario(self, horario):
+        self.horario = horario

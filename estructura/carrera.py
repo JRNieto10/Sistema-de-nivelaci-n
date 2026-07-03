@@ -1,11 +1,9 @@
 class Carrera:
-    def __init__(self,id,area,nombre,jornada,modalidad):
+    def __init__(self, id, area, nombre, modalidad):
         self.id = id
         self.area = area
         self.nombre = nombre
-        self.jornada = jornada
         self.modalidad = modalidad
-
     def retirarse(self):
         print(f"El estudiante se ha retirado de la carrera {self.nombre}")
 
