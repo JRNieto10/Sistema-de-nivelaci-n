@@ -11,7 +11,9 @@ class Login(ctk.CTkToplevel):
         super().__init__(inicio)
         self.inicio = inicio
         self.geometry("900x500")
-        self.inside = None
+        self.inside_estudiante = None
+        self.inside_docente=None
+        self.inside_personal =None
         self.title("login")
         self.label_resultado = None 
         self.labe=None 
@@ -112,17 +114,20 @@ class Login(ctk.CTkToplevel):
     def siguiente_ventana(self,pase):
         self.withdraw()
         if pase == "Estudiante":
-            self.inside = inicial_estudiantes(self)
-            self.inside.crear_boton_volver()
-            self.inside.mainloop()
+            self.inside_estudiante = inicial_estudiantes(self)
+            self.inside_estudiante.crear_boton_volver()
+            self.inside_estudiante.mainloop()
         elif pase == "Docente":
-            self.inside = inicial_docente(self)
-            self.inside.crear_boton_volver()
-            self.inside.mainloop()
+            self.inside_docente = inicial_docente(self)
+            self.inside_docente.crear_boton_volver()
+            self.inside_docente.boton_asignaturas()
+            self.inside_docente.boton_horarios()
+            self.inside_docente.boton_perfil()
+            self.inside_docente.mainloop()
         elif pase == "Administrador":
-            self.inside = inicial_personal(self)
-            self.inside.crear_boton_volver()
-            self.inside.boton_gestionar_carreras()
-            self.inside.mainloop()
+            self.inside_personal = inicial_personal(self)
+            self.inside_personal.crear_boton_volver()
+            self.inside_personal.boton_gestionar_carreras()
+            self.inside_personal.mainloop()
 
         
