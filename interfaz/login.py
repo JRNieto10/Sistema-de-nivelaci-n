@@ -122,6 +122,7 @@ class Login(ctk.CTkToplevel):
         elif pase == "Administrador":
             self.inside = inicial_personal(self)
             self.inside.crear_boton_volver()
+            self.inside.boton_gestionar_carreras()
             self.inside.mainloop()
 
         
