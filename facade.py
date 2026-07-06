@@ -77,6 +77,14 @@ class FacadeSistemaAcademico:
     def crear_administrador(self, nombre, cedula, apellido, correo, contrasena):
         administrador = Personal(nombre, cedula, apellido, correo, contrasena, "personal")
         self.lista_usuarios.append(administrador)
+        self.almacenamiento_usuarios.agregar_usuario({
+            "cedula": cedula,
+            "nombre": nombre,
+            "apellido": apellido,
+            "correo": correo,
+            "contrasena": contrasena,
+            "rol": "personal",
+        }, "personal")
         return administrador
 
 
@@ -85,6 +93,15 @@ class FacadeSistemaAcademico:
     def crear_docente(self, nombre, cedula, apellido, correo, contrasena):
         docente = Docente(nombre, cedula, apellido, correo, contrasena, "docente")
         self.lista_usuarios.append(docente)
+        self.almacenamiento_usuarios.agregar_usuario({
+            "cedula": cedula,
+            "nombre": nombre,
+            "apellido": apellido,
+            "correo": correo,
+            "contrasena": contrasena,
+            "rol": "docente",
+        }, "docente")
+        
         return docente
         
 
@@ -94,6 +111,14 @@ class FacadeSistemaAcademico:
     def crear_estudiante(self, nombre, cedula, apellido, correo, contrasena):
         estudiante = Estudiante(nombre, cedula, apellido, correo, contrasena, "estudiante")
         self.lista_usuarios.append(estudiante)
+        self.almacenamiento_usuarios.agregar_usuario({
+            "cedula": cedula,
+            "nombre": nombre,
+            "apellido": apellido,
+            "correo": correo,
+            "contrasena": contrasena,
+            "rol": "estudiante",
+        }, "estudiante")
         return estudiante
 
     def _registrar_usuario(self, nombre, cedula, apellido, correo, contrasena, rol):

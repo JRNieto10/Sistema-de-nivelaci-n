@@ -2,7 +2,10 @@ import customtkinter as ctk
 from validaciones.login_estudiantes import login_estudiantes
 from validaciones.login_personal import login_personal
 from validaciones.login_docentes import login_docentes
-from interfaz.inside import Inside
+from interfaz_estudiantes.principal_estudiantes import inicial_estudiantes
+from interfaz_docente.principa_docente import inicial_docente
+from interfaz_personal.principal_personal import inicial_personal
+
 class Login(ctk.CTkToplevel):
     def __init__(self, inicio):
         super().__init__(inicio)
@@ -82,36 +85,43 @@ class Login(ctk.CTkToplevel):
             return
         
         if self.combo_rol.get() == "Estudiante":
+            pase = self.combo_rol.get()
             validar = login_estudiantes(cedula, contraseña)
             if validar.validar_login():
-                self.siguiente_ventana()
+                self.siguiente_ventana(pase)
             else:
                 self.mostrar_resultado("Usuario o contraseña incorrectos", "red", True)
                 
         elif self.combo_rol.get() == "Docente":
+            pase=self.combo_rol.get()
             validar = login_docentes(cedula, contraseña)
             if validar.validar_login():
-                self.siguiente_ventana()
+                self.siguiente_ventana(pase)
             else:
                 self.mostrar_resultado("Usuario o contraseña incorrectos","red", True)
                 
         elif self.combo_rol.get() == "Administrador":
+            pase=self.combo_rol.get()
             validar = login_personal(cedula, contraseña)
             if validar.validar_login():
-                self.siguiente_ventana()
+                self.siguiente_ventana(pase)
             else:
                 self.mostrar_resultado("Usuario o contraseña incorrectos","red", True)
         else:
             self.mostrar_resultado("Seleccione un rol válido", "orange", True)
-    def siguiente_ventana(self):
-        self.mostrar_resultado("Login exitoso", "green")
-        if self.inside is None or not self.inside.winfo_exists():
-            self.inside = Inside(self)
-            self.inside.boton_cerrarsesion()
-            
-        else:
-            self.inside.deiconify()
-
+    def siguiente_ventana(self,pase):
         self.withdraw()
+        if pase == "Estudiante":
+            self.inside = inicial_estudiantes(self)
+            self.inside.crear_boton_volver()
+            self.inside.mainloop()
+        elif pase == "Docente":
+            self.inside = inicial_docente(self)
+            self.inside.crear_boton_volver()
+            self.inside.mainloop()
+        elif pase == "Administrador":
+            self.inside = inicial_personal(self)
+            self.inside.crear_boton_volver()
+            self.inside.mainloop()
 
         
