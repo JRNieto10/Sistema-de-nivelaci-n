@@ -66,14 +66,37 @@ class AlmacenamientoCursos:
         except Exception as e:
             return None
     
-    def guardar_paralelos(self, carrera_nombre, curso_nombre, paralelos):
+    def guardar_paralelos(self, carrera_nombre, curso_nombre, paralelos, materias_del_curso=None):
         curso_path = self._get_curso_path(carrera_nombre, curso_nombre)
+        
+        # Si no se pasan materias, intentar cargar desde estructura.json
+        if materias_del_curso is None:
+            estructura_path = os.path.join(curso_path, "estructura.json")
+            if os.path.exists(estructura_path):
+                try:
+                    with open(estructura_path, 'r', encoding='utf-8') as f:
+                        estructura = json.load(f)
+                        materias_del_curso = estructura.get("materias", [])
+                except:
+                    materias_del_curso = []
+            else:
+                materias_del_curso = []
+        
+        # Procesar paralelos para incluir materias
+        paralelos_procesados = []
+        for paralelo in paralelos:
+            paralelo_data = paralelo.copy()
+            # Si el paralelo no tiene materias, asignar las del curso
+            if not paralelo_data.get("materias"):
+                paralelo_data["materias"] = materias_del_curso
+            paralelos_procesados.append(paralelo_data)
         
         datos_paralelos = {
             "curso": curso_nombre,
             "carrera": carrera_nombre,
             "fecha_creacion": datetime.now().isoformat(),
-            "paralelos": paralelos
+            "materias_del_curso": materias_del_curso,
+            "paralelos": paralelos_procesados
         }
         
         archivo = os.path.join(curso_path, "paralelos.json")

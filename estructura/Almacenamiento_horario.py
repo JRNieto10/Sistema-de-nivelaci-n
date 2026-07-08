@@ -1,3 +1,4 @@
+# Almacenamiento_horario.py
 import json
 import os
 
@@ -13,14 +14,31 @@ class GuardarHorarios:
         if horario is None or horario == {}:
             horario = self._construir_horario_desde_curso(paralelo.curso)
         
+        estudiantes_nombres = []
+        for est in paralelo.estudiantes:
+            if hasattr(est, 'nombre'):
+                estudiantes_nombres.append(est.nombre)
+            else:
+                estudiantes_nombres.append(str(est))
+        
         paralelo_dict = {
             "nombre": paralelo.nombre,
             "id": paralelo.id,
-            "curso": paralelo.curso.nombre_curso if hasattr(paralelo.curso, 'nombre_curso') else str(paralelo.curso),
-            "estudiantes": [est.nombre if hasattr(est, 'nombre') else str(est) for est in paralelo.estudiantes],
+            "curso": paralelo.curso.nombre if hasattr(paralelo.curso, 'nombre') else str(paralelo.curso),
+            "estudiantes": estudiantes_nombres,
             "horario": horario
         }
-        self.paralelos.append(paralelo_dict)
+        
+        encontrado = False
+        for i, p in enumerate(self.paralelos):
+            if p["nombre"] == paralelo.nombre:
+                self.paralelos[i] = paralelo_dict
+                encontrado = True
+                break
+        
+        if not encontrado:
+            self.paralelos.append(paralelo_dict)
+        
         self._guardar_en_archivo()
     
     def _construir_horario_desde_curso(self, curso):
@@ -58,7 +76,7 @@ class GuardarHorarios:
         return None
     
     def mostrar_horario_paralelo(self, nombre_paralelo):
-        horario = self.obtener_horario_paralelo(nombre_paralelo.nombre)
+        horario = self.obtener_horario_paralelo(nombre_paralelo)
         if not horario or not horario.get("materias"):
             return
     

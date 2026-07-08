@@ -1,3 +1,4 @@
+# paralelo.py
 from .Almacenamiento_horario import GuardarHorarios
 
 class Paralelo:
@@ -7,14 +8,16 @@ class Paralelo:
         self.curso = curso
         self.estudiantes = []
         self.horario = None
-        self.gestor_horarios = GuardarHorarios()  # Añadir referencia
+        self.gestor_horarios = GuardarHorarios()
 
     def inscribir_estudiante(self, estudiante):
-        self.estudiantes.append(estudiante)
-        print(f"Estudiante {estudiante.nombre if hasattr(estudiante, 'nombre') else estudiante} inscrito en {self.nombre}")
-        # Guardar automáticamente
-        self.gestor_horarios.guardar_paralelo(self)
-        
+        if estudiante not in self.estudiantes:
+            self.estudiantes.append(estudiante)
+            nombre_est = estudiante.nombre if hasattr(estudiante, 'nombre') else str(estudiante)
+            print(f"Estudiante {nombre_est} inscrito en {self.nombre}")
+            return True
+        return False
+
     def retirar_estudiante(self, estudiante):
         if estudiante in self.estudiantes:
             self.estudiantes.remove(estudiante)

@@ -2,6 +2,14 @@ import customtkinter as ctk
 from facade import FacadeSistemaAcademico
 import tkinter.messagebox as messagebox
 from tkinter import filedialog
+from estructura.estrategias_importacion import (
+    ImportacionCSV,
+    ImportacionJSON,
+    ImportacionExcel,
+    ImportacionTXT,
+    ImportacionAutomatica,
+    FabricaEstrategias
+)
 
 class Permitidos_gestionar(ctk.CTkToplevel):
     def __init__(self, principal, carrera_actual=None):
@@ -10,10 +18,11 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         self.principal = principal
         self.carrera_actual = carrera_actual
         self.sistema = FacadeSistemaAcademico()
-        self.geometry("900x700")
-
+        self.geometry("900x750")
+        
         self.cedula_seleccionada = None
         self.tipo_seleccionado = None
+        self.formato_actual = "csv"
 
         self.frame_principal = ctk.CTkFrame(self)
         self.frame_principal.pack(fill="both", expand=True, padx=20, pady=20)
@@ -76,27 +85,45 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         )
         self.btn_agregar.pack(side="left", padx=10)
 
-        self.btn_importar_csv = ctk.CTkButton(
-            frame_input,
-            text="Importar CSV",
-            command=self.importar_desde_csv,
-            fg_color="#f39c12",
-            hover_color="#e67e22",
+        frame_formato = ctk.CTkFrame(self.frame_agregar, fg_color="transparent")
+        frame_formato.pack(pady=5)
+
+        ctk.CTkLabel(frame_formato, text="Formato de importacion:", font=("Arial", 12)).pack(side="left", padx=5)
+        
+        self.combobox_formato = ctk.CTkComboBox(
+            frame_formato,
+            values=["CSV", "JSON", "Excel", "TXT", "Automatico"],
             width=150,
+            height=30,
+            command=self.cambiar_formato
+        )
+        self.combobox_formato.pack(side="left", padx=5)
+        self.combobox_formato.set("Automatico")
+
+        frame_importar = ctk.CTkFrame(self.frame_agregar, fg_color="transparent")
+        frame_importar.pack(pady=5)
+
+        self.btn_importar = ctk.CTkButton(
+            frame_importar,
+            text="Importar Archivo",
+            command=self.importar_archivo,
+            fg_color="#3498db",
+            hover_color="#2980b9",
+            width=180,
             height=35
         )
-        self.btn_importar_csv.pack(side="left", padx=10)
+        self.btn_importar.pack(side="left", padx=5)
 
         self.btn_importar_masivo = ctk.CTkButton(
-            frame_input,
-            text="Importar Masivo",
+            frame_importar,
+            text="Importar Masivo (Ejemplo)",
             command=self.importar_masivo_ejemplo,
             fg_color="#9b59b6",
             hover_color="#8e44ad",
-            width=150,
+            width=180,
             height=35
         )
-        self.btn_importar_masivo.pack(side="left", padx=10)
+        self.btn_importar_masivo.pack(side="left", padx=5)
 
         ctk.CTkFrame(self.frame_principal, height=2, fg_color="#ccc").pack(fill="x", padx=10, pady=10)
 
@@ -158,6 +185,129 @@ class Permitidos_gestionar(ctk.CTkToplevel):
 
         self.cargar_cedulas()
 
+    def cambiar_formato(self, valor):
+        formato_map = {
+            "CSV": "csv",
+            "JSON": "json",
+            "Excel": "excel",
+            "TXT": "txt",
+            "Automatico": "auto"
+        }
+        self.formato_actual = formato_map.get(valor, "auto")
+        self.sistema.set_estrategia_por_formato(self.formato_actual)
+        self.label_mensaje.configure(
+            text=f"Formato de importacion: {valor}",
+            text_color="#3498db"
+        )
+
+    def importar_archivo(self):
+        tipos_archivo = []
+        
+        if self.formato_actual == "csv":
+            tipos_archivo = [("Archivos CSV", "*.csv")]
+        elif self.formato_actual == "json":
+            tipos_archivo = [("Archivos JSON", "*.json")]
+        elif self.formato_actual == "excel":
+            tipos_archivo = [("Archivos Excel", "*.xlsx")]
+        elif self.formato_actual == "txt":
+            tipos_archivo = [("Archivos TXT", "*.txt")]
+        else:
+            tipos_archivo = [
+                ("Todos los archivos soportados", "*.csv;*.json;*.xlsx;*.txt"),
+                ("Archivos CSV", "*.csv"),
+                ("Archivos JSON", "*.json"),
+                ("Archivos Excel", "*.xlsx"),
+                ("Archivos TXT", "*.txt"),
+                ("Todos los archivos", "*.*")
+            ]
+        
+        archivo = filedialog.askopenfilename(
+            title="Seleccionar archivo para importar",
+            filetypes=tipos_archivo
+        )
+
+        if not archivo:
+            return
+
+        try:
+            resultado = self.sistema.importar_cedulas(archivo)
+            
+            mensaje = "=" * 50 + "\n"
+            mensaje += "RESULTADO DE IMPORTACION\n"
+            mensaje += "=" * 50 + "\n\n"
+            mensaje += f"Cedulas agregadas: {resultado['exitosos']}\n"
+            mensaje += f"Cedulas duplicadas: {resultado['duplicados']}\n"
+            
+            if resultado['errores']:
+                mensaje += f"\nErrores ({len(resultado['errores'])}):\n"
+                for error in resultado['errores'][:10]:
+                    mensaje += f"   - {error}\n"
+                if len(resultado['errores']) > 10:
+                    mensaje += f"   ... y {len(resultado['errores']) - 10} errores mas"
+            
+            messagebox.showinfo("Resultado de Importacion", mensaje)
+            self.cargar_cedulas()
+            
+            if resultado['exitosos'] > 0:
+                self.label_mensaje.configure(
+                    text=f"{resultado['exitosos']} cedulas importadas correctamente",
+                    text_color="#2ecc71"
+                )
+            else:
+                self.label_mensaje.configure(
+                    text="No se importaron nuevas cedulas",
+                    text_color="#f39c12"
+                )
+                
+        except Exception as e:
+            self.label_mensaje.configure(
+                text=f"Error al importar: {str(e)}",
+                text_color="red"
+            )
+            messagebox.showerror("Error", f"No se pudo importar el archivo:\n{str(e)}")
+
+    def importar_desde_csv(self):
+        self.importar_archivo()
+
+    def importar_masivo_ejemplo(self):
+        cedulas_ejemplo = [
+            {"cedula": "1515151515", "tipo": "estudiante"},
+            {"cedula": "1616161616", "tipo": "estudiante"},
+            {"cedula": "1717171717", "tipo": "estudiante"},
+            {"cedula": "1818181818", "tipo": "docente"},
+            {"cedula": "1919191919", "tipo": "docente"},
+            {"cedula": "2020202020", "tipo": "personal"}
+        ]
+        
+        importados = []
+        duplicados = []
+        
+        for item in cedulas_ejemplo:
+            if self.sistema.agregar_cedula_permitida(item["cedula"], item["tipo"]):
+                importados.append(f"{item['cedula']} ({item['tipo']})")
+            else:
+                duplicados.append(f"{item['cedula']} ({item['tipo']})")
+        
+        mensaje = f"Cedulas importadas: {len(importados)}\n"
+        if importados:
+            mensaje += "\nImportadas:\n" + "\n".join(f"   - {i}" for i in importados)
+        if duplicados:
+            mensaje += f"\n\nYa existian ({len(duplicados)}):\n" + "\n".join(f"   - {d}" for d in duplicados)
+        
+        messagebox.showinfo("Importacion Masiva", mensaje)
+        self.cargar_cedulas()
+        
+        if importados:
+            self.label_mensaje.configure(
+                text=f"{len(importados)} cedulas importadas",
+                text_color="#2ecc71"
+            )
+        else:
+            self.label_mensaje.configure(
+                text="Todas las cedulas ya existian",
+                text_color="#f39c12"
+            )
+
     def cargar_cedulas(self):
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
@@ -180,7 +330,7 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         if datos["estudiantes"]:
             ctk.CTkLabel(
                 self.scrollable_frame,
-                text="Estudiantes:",
+                text=f"Estudiantes ({len(datos['estudiantes'])}):",
                 font=("Arial", 14, "bold"),
                 text_color="#3498db"
             ).pack(anchor="w", padx=10, pady=5)
@@ -192,7 +342,7 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         if datos["docentes"]:
             ctk.CTkLabel(
                 self.scrollable_frame,
-                text="Docentes:",
+                text=f"Docentes ({len(datos['docentes'])}):",
                 font=("Arial", 14, "bold"),
                 text_color="#f39c12"
             ).pack(anchor="w", padx=10, pady=5)
@@ -204,7 +354,7 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         if datos["personal"]:
             ctk.CTkLabel(
                 self.scrollable_frame,
-                text="Personal Administrativo:",
+                text=f"Personal Administrativo ({len(datos['personal'])}):",
                 font=("Arial", 14, "bold"),
                 text_color="#9b59b6"
             ).pack(anchor="w", padx=10, pady=5)
@@ -228,7 +378,7 @@ class Permitidos_gestionar(ctk.CTkToplevel):
 
         label_info = ctk.CTkLabel(
             frame_contenido,
-            text=f"{numero}. Cedula: {cedula} | Rol: {tipo.capitalize()}",
+            text=f"{numero}. {cedula} | {tipo.capitalize()}",
             font=("Arial", 13),
             text_color=colores.get(tipo, "#000000")
         )
@@ -301,50 +451,6 @@ class Permitidos_gestionar(ctk.CTkToplevel):
             messagebox.showinfo("Exito", f"Cedula {cedula} agregada exitosamente como {rol}")
         else:
             self.label_mensaje.configure(text="Error al agregar la cedula", text_color="red")
-
-    def importar_desde_csv(self):
-        archivo = filedialog.askopenfilename(
-            title="Seleccionar archivo CSV",
-            filetypes=[("Archivos CSV", "*.csv"), ("Todos los archivos", "*.*")]
-        )
-
-        if not archivo:
-            return
-
-        resultado = self.sistema.importar_cedulas_csv(archivo)
-
-        mensaje = "Importacion completada:\n"
-        mensaje += f"Agregadas: {resultado['exitosos']}\n"
-        mensaje += f"Duplicadas: {resultado['duplicados']}\n"
-
-        if resultado['errores']:
-            mensaje += f"\nErrores:\n" + "\n".join(resultado['errores'][:5])
-            if len(resultado['errores']) > 5:
-                mensaje += f"\n... y {len(resultado['errores']) - 5} errores mas"
-
-        messagebox.showinfo("Resultado de Importacion", mensaje)
-        self.cargar_cedulas()
-
-    def importar_masivo_ejemplo(self):
-        cedulas_ejemplo = [
-            "151515151",
-            "161616161",
-            "171717171",
-            "181818181",
-            "191919191",
-            "202020202"
-        ]
-
-        resultado = self.sistema.agregar_cedulas_masivas(cedulas_ejemplo, "estudiante")
-
-        if resultado:
-            messagebox.showinfo(
-                "Importacion Masiva",
-                f"Se importaron {len(resultado)} cedulas de estudiantes:\n" + "\n".join(resultado)
-            )
-            self.cargar_cedulas()
-        else:
-            messagebox.showwarning("Importacion Masiva", "No se importaron nuevas cedulas (todas ya existian)")
 
     def limpiar_todas_cedulas(self):
         respuesta = messagebox.askyesno(

@@ -1,3 +1,4 @@
+# facade_datos.py
 import json
 import os
 from estructura.Almacenamiento_horario import GuardarHorarios
@@ -32,7 +33,6 @@ class FacadeDatos:
             "Datos/permitidos.json",
             "Datos/paralelos.json",
             "Datos/horarios_docentes.json",
-            "Datos/carreras.json",
         ]
         for archivo in archivos:
             if not os.path.exists(archivo):
@@ -53,7 +53,6 @@ class FacadeDatos:
                     else:
                         json.dump([], f, ensure_ascii=False, indent=4)
 
-    # Métodos para gestión de permitidos (usados por gestionar_permitidos.py)
     def agregar_cedula_permitida(self, cedula, tipo):
         return self.gestion_permitidos.agregar_cedula(cedula, tipo)
 
@@ -66,7 +65,6 @@ class FacadeDatos:
     def listar_cedulas(self):
         return self.gestion_permitidos.listar_cedulas()
 
-    # Métodos para gestión de horarios (usados por otros módulos)
     def guardar_horario_docente(self, docente, cursos):
         if hasattr(docente, 'horario'):
             self.gestor_horarios_docentes.guardar_horario_docente(docente, cursos)
@@ -98,7 +96,6 @@ class FacadeDatos:
         for paralelo in self.lista_paralelos:
             print(f"- {paralelo.nombre if hasattr(paralelo, 'nombre') else paralelo}")
 
-    # Métodos para consulta de usuarios (usados por módulos de estudiantes)
     def obtener_estudiante(self, cedula):
         ruta_estudiantes = os.path.join(self.ruta_base, "estudiantes.json")
         if os.path.exists(ruta_estudiantes):
@@ -147,7 +144,6 @@ class FacadeDatos:
             return self.obtener_personal(cedula)
         return None
 
-    # Métodos para gestión de matrículas (usados por módulos de estudiantes)
     def cargar_estado_matricula(self, cedula):
         if not cedula:
             return None
@@ -173,7 +169,6 @@ class FacadeDatos:
         except Exception:
             pass
 
-    # Métodos de verificación de existencia (usados por módulos de estudiantes)
     def verificar_estudiante_existe(self, cedula):
         ruta_estudiantes = os.path.join(self.ruta_base, "estudiantes.json")
         if os.path.exists(ruta_estudiantes):
@@ -222,7 +217,6 @@ class FacadeDatos:
             return self.verificar_personal_existe(cedula)
         return False
 
-    # Métodos para búsqueda de paralelos (usados por módulos de estudiantes)
     def buscar_paralelos(self, carrera):
         paralelos = []
         ruta_carrera = os.path.join(self.ruta_base, carrera)
@@ -257,7 +251,6 @@ class FacadeDatos:
         ruta_carrera = os.path.join(self.ruta_base, carrera)
         return os.path.exists(ruta_carrera)
 
-    # Métodos para carga de datos (usados por módulos de estudiantes y otros)
     def cargar_docentes_desde_json(self):
         try:
             ruta = os.path.join(self.ruta_base, "docentes.json")
@@ -288,7 +281,6 @@ class FacadeDatos:
         except Exception:
             return []
 
-    # Métodos para guardado de cursos y carreras (usados por módulos de creación)
     def guardar_curso(self, carrera_nombre, curso_nombre, materias_con_docentes):
         return self.almacenamiento_cursos.guardar_curso(carrera_nombre, curso_nombre, materias_con_docentes)
 
@@ -298,7 +290,6 @@ class FacadeDatos:
     def guardar_paralelos(self, carrera_nombre, curso_nombre, paralelos_data):
         return self.almacenamiento_cursos.guardar_paralelos(carrera_nombre, curso_nombre, paralelos_data)
 
-    # Métodos para gestión de carreras (usados por facade.py)
     def guardar_carrera(self, carrera):
         return self.almacenamiento_carreras.guardar_carrera(carrera)
 
@@ -317,7 +308,6 @@ class FacadeDatos:
     def obtener_asignaturas_carrera(self, id_carrera):
         return self.almacenamiento_carreras.obtener_asignaturas_carrera(id_carrera)
 
-    # Métodos para gestión de usuarios (usados por facade.py)
     def comprobar_duplicados(self, cedula, rol):
         return self.almacenamiento_usuarios.comprobar_duplicados(cedula, rol)
 
@@ -332,3 +322,94 @@ class FacadeDatos:
 
     def limpiar_todas_cedulas(self):
         return self.gestion_permitidos.limpiar_todos()
+
+    def guardar_paralelo_actualizado(self, paralelo):
+        for p in self.lista_paralelos:
+            if p.nombre == paralelo.nombre:
+                self.gestor_horarios.guardar_paralelo(p)
+                return True
+        return False
+    
+    
+    def sincronizar_paralelo_con_matriculas(self, paralelo_nombre):
+        """Sincroniza los estudiantes de un paralelo con sus matrículas"""
+        # Buscar el paralelo en la lista en memoria
+        paralelo_obj = None
+        for p in self.lista_paralelos:
+            if p.nombre == paralelo_nombre:
+                paralelo_obj = p
+                break
+        
+        if not paralelo_obj:
+            print(f"Paralelo {paralelo_nombre} no encontrado en memoria")
+            return False
+        
+        # Obtener nombres de estudiantes de las matrículas
+        ruta_matriculas = os.path.join(self.ruta_base, "matriculas")
+        estudiantes_nombres = []
+        
+        if os.path.exists(ruta_matriculas):
+            for archivo in os.listdir(ruta_matriculas):
+                if archivo.startswith("matricula_") and archivo.endswith(".json"):
+                    ruta_matricula = os.path.join(ruta_matriculas, archivo)
+                    try:
+                        with open(ruta_matricula, 'r', encoding='utf-8') as f:
+                            datos = json.load(f)
+                            if datos.get("paralelo") == paralelo_nombre:
+                                estudiantes_nombres.append(datos.get("nombre"))
+                    except Exception as e:
+                        print(f"Error al leer {archivo}: {e}")
+        
+        # Actualizar la lista de estudiantes del paralelo
+        paralelo_obj.estudiantes = estudiantes_nombres
+        
+        # Guardar el paralelo actualizado en el archivo
+        try:
+            ruta_paralelos = os.path.join(self.ruta_base, "paralelos.json")
+            
+            # Cargar todos los paralelos existentes
+            paralelos_data = []
+            if os.path.exists(ruta_paralelos):
+                with open(ruta_paralelos, 'r', encoding='utf-8') as f:
+                    paralelos_data = json.load(f)
+            
+            # Buscar y actualizar el paralelo específico
+            encontrado = False
+            for i, p_data in enumerate(paralelos_data):
+                if p_data.get("nombre") == paralelo_nombre:
+                    # Convertir el objeto Paralelo a diccionario
+                    p_data["estudiantes"] = estudiantes_nombres
+                    encontrado = True
+                    break
+            
+            # Si no se encontró, agregarlo
+            if not encontrado:
+                nuevo_paralelo = {
+                    "nombre": paralelo_nombre,
+                    "id": paralelo_obj.id,
+                    "curso": str(paralelo_obj.curso) if hasattr(paralelo_obj, 'curso') else "",
+                    "estudiantes": estudiantes_nombres,
+                    "horario": {}
+                }
+                paralelos_data.append(nuevo_paralelo)
+            
+            # Guardar el archivo actualizado
+            with open(ruta_paralelos, 'w', encoding='utf-8') as f:
+                json.dump(paralelos_data, f, ensure_ascii=False, indent=4)
+            
+            print(f"Paralelo {paralelo_nombre} actualizado con {len(estudiantes_nombres)} estudiantes")
+            return True
+            
+        except Exception as e:
+            print(f"Error al guardar paralelo: {e}")
+            return False
+    def sincronizar_todos_paralelos(self):
+        """Sincroniza todos los paralelos con sus matrículas"""
+        print("Sincronizando todos los paralelos...")
+        contador = 0
+        for paralelo in self.lista_paralelos:
+            nombre = paralelo.nombre if hasattr(paralelo, 'nombre') else str(paralelo)
+            if self.sincronizar_paralelo_con_matriculas(nombre):
+                contador += 1
+        print(f"Sincronización completada. {contador} paralelos actualizados.")
+        return True

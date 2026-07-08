@@ -1,6 +1,8 @@
+# almacenamiento_carreras.py
 import json
 import os
 from estructura.carrera import Carrera
+from estructura.asignatura import Asignatura
 
 class AlmacenamientoCarreras:
     def __init__(self):
@@ -24,7 +26,7 @@ class AlmacenamientoCarreras:
                 "asignaturas": []
             }
             
-            if hasattr(carrera, 'asignaturas'):
+            if hasattr(carrera, 'asignaturas') and carrera.asignaturas:
                 for asig in carrera.asignaturas:
                     if hasattr(asig, '__dict__'):
                         asignatura_dict = {
@@ -35,8 +37,10 @@ class AlmacenamientoCarreras:
                             "modalidad": asig.modalidad
                         }
                         datos_carrera["asignaturas"].append(asignatura_dict)
-                    else:
+                    elif isinstance(asig, dict):
                         datos_carrera["asignaturas"].append(asig)
+                    else:
+                        datos_carrera["asignaturas"].append(str(asig))
             
             with open(ruta_completa, "w", encoding="utf-8") as archivo:
                 json.dump(datos_carrera, archivo, ensure_ascii=False, indent=4)
@@ -64,8 +68,6 @@ class AlmacenamientoCarreras:
             )
             
             if "asignaturas" in datos:
-                from estructura.asignatura import Asignatura
-                carrera.asignaturas = []
                 for asig_dict in datos["asignaturas"]:
                     asignatura = Asignatura(
                         asig_dict["nombre"],
@@ -115,11 +117,7 @@ class AlmacenamientoCarreras:
             if not carrera:
                 return False
             
-            if hasattr(carrera, 'asignaturas'):
-                carrera.asignaturas.append(asignatura)
-            else:
-                carrera.asignaturas = [asignatura]
-            
+            carrera.asignaturas.append(asignatura)
             return self.guardar_carrera(carrera)
         except Exception as e:
             return False
@@ -127,7 +125,7 @@ class AlmacenamientoCarreras:
     def obtener_asignaturas_carrera(self, id_carrera):
         try:
             carrera = self.cargar_carrera(id_carrera)
-            if carrera and hasattr(carrera, 'asignaturas'):
+            if carrera:
                 return carrera.asignaturas
             return []
         except Exception as e:

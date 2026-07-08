@@ -216,7 +216,6 @@ datos.guardar_horario_docente(changuin, cursos)
 datos.guardar_horario_docente(mari, cursos)
 datos.guardar_horario_docente(carlitos, cursos)
 print("Horarios guardados")
-
 print("\n10. CREACION DE PARALELOS")
 print("-" * 40)
 
@@ -231,17 +230,43 @@ paralelo_b3 = datos.crear_horario_paralelo(curso_c, "Quinto_B")
 paralelo_c3 = datos.crear_horario_paralelo(curso_c, "Quinto_C")
 print("Paralelos creados")
 
-print("\nGuardando paralelos:")
+print("\nGuardando paralelos con materias:")
+# Obtener materias del curso para incluirlas
+materias_curso_a = []
+for materia_nombre in curso_a.materias:
+    materias_curso_a.append({"nombre": materia_nombre})
+
+materias_curso_b = []
+for materia_nombre in curso_b.materias:
+    materias_curso_b.append({"nombre": materia_nombre})
+
+materias_curso_c = []
+for materia_nombre in curso_c.materias:
+    materias_curso_c.append({"nombre": materia_nombre})
+
 paralelos_data = [
-    {"letra": "A", "aula": "101", "horario": "Lunes 8-10", "materias": []},
-    {"letra": "B", "aula": "102", "horario": "Martes 8-10", "materias": []}
+    {"letra": "A", "aula": "101", "horario": "Lunes 8-10", "materias": materias_curso_a},
+    {"letra": "B", "aula": "102", "horario": "Martes 8-10", "materias": materias_curso_a},
+    {"letra": "C", "aula": "103", "horario": "Miercoles 8-10", "materias": materias_curso_a}
 ]
 resultado_guardar_paralelos = datos.guardar_paralelos("software1", "Tercero", paralelos_data)
-print(f"  Resultado: {resultado_guardar_paralelos}")
+print(f"  Resultado Tercero: {resultado_guardar_paralelos}")
 
-print("\nTodos los paralelos:")
-datos.mostrar_todos_los_paralelos()
+paralelos_data_cuarto = [
+    {"letra": "A", "aula": "201", "horario": "Lunes 10-12", "materias": materias_curso_b},
+    {"letra": "B", "aula": "202", "horario": "Martes 10-12", "materias": materias_curso_b},
+    {"letra": "C", "aula": "203", "horario": "Miercoles 10-12", "materias": materias_curso_b}
+]
+resultado_guardar_paralelos_cuarto = datos.guardar_paralelos("software1", "Cuarto", paralelos_data_cuarto)
+print(f"  Resultado Cuarto: {resultado_guardar_paralelos_cuarto}")
 
+paralelos_data_quinto = [
+    {"letra": "A", "aula": "301", "horario": "Jueves 8-10", "materias": materias_curso_c},
+    {"letra": "B", "aula": "302", "horario": "Jueves 10-12", "materias": materias_curso_c},
+    {"letra": "C", "aula": "303", "horario": "Viernes 8-10", "materias": materias_curso_c}
+]
+resultado_guardar_paralelos_quinto = datos.guardar_paralelos("software1", "Quinto", paralelos_data_quinto)
+print(f"  Resultado Quinto: {resultado_guardar_paralelos_quinto}")
 print("\n11. MOSTRAR HORARIOS")
 print("-" * 40)
 
@@ -367,3 +392,6 @@ print("PRUEBA COMPLETA FINALIZADA")
 
 
 
+print("\nSincronizando paralelos...")
+datos.sincronizar_todos_paralelos()
+print("Sincronización completada")

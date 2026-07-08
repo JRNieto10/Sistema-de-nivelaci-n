@@ -1,3 +1,4 @@
+# facade.py
 from estructura.Almacenamiento_horario import GuardarHorarios
 from estructura.Almacenamiento_horario_docente import horariodocentealmacenar
 from estructura.estudiantes import Estudiante
@@ -15,6 +16,15 @@ from estructura.Almacenamiento_ingreso import GestorAlmacenamiento
 from estructura.Autenticacion import Autenticacion
 from estructura.fabrica_usuarios import FabricaUsuarios
 from estructura.gest_permitidos import GestionPermitidos
+from estructura.estrategias_importacion import (
+    EstrategiaImportacion,
+    ImportacionCSV,
+    ImportacionJSON,
+    ImportacionExcel,
+    ImportacionTXT,
+    ImportacionAutomatica,
+    FabricaEstrategias
+)
 from facade_datos import FacadeDatos
 
 class FacadeSistemaAcademico:
@@ -28,7 +38,7 @@ class FacadeSistemaAcademico:
         self.lista_tutorias = []
         self.lista_notas = []
         self.facade_datos = FacadeDatos()
-        self.almacenamiento_carreras = self.facade_datos.almacenamiento_carreras
+        self.estrategia_importacion = ImportacionCSV()
 
     def _inicializar_subsistemas(self):
         self.gestor_horarios = GuardarHorarios()
@@ -40,6 +50,45 @@ class FacadeSistemaAcademico:
         self.gestion_permitidos = GestionPermitidos()
         self.fabrica_usuarios = FabricaUsuarios()
         self.almacenamiento_verificacion = Almacenamiento_Usuarios()
+
+    def set_estrategia_importacion(self, estrategia):
+        self.estrategia_importacion = estrategia
+
+    def set_estrategia_por_formato(self, formato):
+        self.estrategia_importacion = FabricaEstrategias.crear_estrategia(formato)
+
+    def importar_cedulas(self, ruta_archivo):
+        if isinstance(self.estrategia_importacion, ImportacionAutomatica):
+            return self.estrategia_importacion.importar(ruta_archivo, self)
+        else:
+            return self.estrategia_importacion.importar(ruta_archivo, self)
+
+    def importar_cedulas_con_formato(self, ruta_archivo, formato):
+        estrategia = FabricaEstrategias.crear_estrategia(formato)
+        return estrategia.importar(ruta_archivo, self)
+
+    def importar_cedulas_csv(self, ruta_csv):
+        if self.estrategia_importacion:
+            return self.estrategia_importacion.importar(ruta_csv, self)
+        else:
+            estrategia = ImportacionCSV()
+            return estrategia.importar(ruta_csv, self)
+
+    def listar_csvs_carpeta(self, carpeta="importaciones/"):
+        import os
+        import glob
+        
+        if not os.path.exists(carpeta):
+            os.makedirs(carpeta, exist_ok=True)
+            return []
+        
+        archivos = []
+        for ext in ['*.csv', '*.json', '*.xlsx', '*.txt']:
+            patron = os.path.join(carpeta, ext)
+            archivos.extend(glob.glob(patron))
+        
+        archivos.sort()
+        return archivos
 
     def crear_administrador(self, nombre, cedula, apellido, correo, contrasena):
         administrador = Personal(nombre, cedula, apellido, correo, contrasena, "personal")
@@ -99,7 +148,6 @@ class FacadeSistemaAcademico:
             return True, f"el {nombre} quedo registrado"
         return False, "fallo el registro"
 
-    # Métodos para gestión de carreras
     def crear_carrera(self, id, area, nombre, modalidad):
         if self.obtener_carrera_por_id(id):
             return None, "Ya existe una carrera con ese ID"
@@ -140,11 +188,8 @@ class FacadeSistemaAcademico:
     def agregar_asignatura_a_carrera(self, id_carrera, asignatura):
         carrera = self.obtener_carrera_por_id(id_carrera)
         if carrera:
-            if not hasattr(carrera, 'asignaturas'):
-                carrera.asignaturas = []
             carrera.asignaturas.append(asignatura)
             return self.facade_datos.guardar_carrera(carrera)
-        
         return self.facade_datos.agregar_asignatura_a_carrera(id_carrera, asignatura)
     
     def obtener_asignaturas_carrera(self, id_carrera):
@@ -183,108 +228,31 @@ class FacadeSistemaAcademico:
         
         curso.agregar_docente(docente_obj, materia_nombre)
         return True
-        
+            
     def inscribir_estudiante_en_paralelo(self, paralelo, estudiante):
         paralelo.inscribir_estudiante(estudiante)
-
+        self.facade_datos.guardar_paralelo_actualizado(paralelo)
+        
+        nombre_paralelo = paralelo.nombre if hasattr(paralelo, 'nombre') else str(paralelo)
+        datos_matricula = {
+            "cedula": estudiante.cedula,
+            "nombre": estudiante.nombre,
+            "apellido": estudiante.apellido,
+            "carrera": "software1",
+            "paralelo": nombre_paralelo,
+            "materias_inscritas": []
+        }
+        self.facade_datos.guardar_estado_matricula(datos_matricula)
+        
+        self.facade_datos.sincronizar_paralelo_con_matriculas(nombre_paralelo)
+    
+    def sincronizar_todos_paralelos(self):
+        return self.facade_datos.sincronizar_todos_paralelos()
+    
     def crear_tutoria(self, id, fecha, tema, estudiantes=None):
         tutoria = Tutoria(id, fecha, tema, estudiantes)
         self.lista_tutorias.append(tutoria)
         return tutoria
-    
-    # En facade.py, agregar este método:
-
-    def registrar_usuario(self, nombre="", cedula="", apellido="", correo="", contrasena="", rol=""):
-        """
-        Registra un usuario en el sistema
-        """
-        # Verificar si la cédula está permitida
-        if not self.facade_datos.verificar_cedula(cedula):
-            return False, "Cédula no permitida"
-        
-        # Verificar si el usuario ya existe
-        if self.facade_datos.verificar_usuario_existe(cedula, rol):
-            return False, "El usuario ya existe"
-        
-        # Crear usuario según el rol
-        if rol == "estudiante":
-            usuario = self.crear_estudiante(nombre, cedula, apellido, correo, contrasena)
-        elif rol == "docente":
-            usuario = self.crear_docente(nombre, cedula, apellido, correo, contrasena)
-        elif rol == "personal" or rol == "administrador":
-            usuario = self.crear_administrador(nombre, cedula, apellido, correo, contrasena)
-        else:
-            return False, "Rol no válido"
-        
-        return True, f"Usuario {nombre} registrado exitosamente"
-        
-    def importar_cedulas_csv(self, ruta_csv):
-        import csv
-        import os
-        
-        resultado = {"exitosos": 0, "duplicados": 0, "errores": []}
-        
-        try:
-            if not os.path.exists(ruta_csv):
-                resultado["errores"].append(f"Archivo no encontrado: {ruta_csv}")
-                return resultado
-                
-            with open(ruta_csv, 'r', encoding='utf-8') as archivo:
-                muestra = archivo.read(1024)
-                archivo.seek(0)
-                
-                if ';' in muestra:
-                    delimitador = ';'
-                elif '\t' in muestra:
-                    delimitador = '\t'
-                else:
-                    delimitador = ','
-                
-                reader = csv.DictReader(archivo, delimiter=delimitador)
-                
-                if 'cedula' not in reader.fieldnames or 'tipo' not in reader.fieldnames:
-                    resultado["errores"].append("El CSV debe tener columnas 'cedula' y 'tipo'")
-                    return resultado
-                
-                for fila in reader:
-                    try:
-                        cedula = fila.get('cedula', '').strip()
-                        tipo = fila.get('tipo', '').strip().lower()
-                        
-                        if not cedula or not tipo:
-                            resultado["errores"].append(f"Datos incompletos: {fila}")
-                            continue
-                        
-                        if tipo not in ["estudiante", "docente", "personal"]:
-                            resultado["errores"].append(f"Tipo inválido '{tipo}' para cédula {cedula}")
-                            continue
-                        
-                        if self.agregar_cedula_permitida(cedula, tipo):
-                            resultado["exitosos"] += 1
-                        else:
-                            resultado["duplicados"] += 1
-                            
-                    except Exception as e:
-                        resultado["errores"].append(f"Error procesando {fila}: {str(e)}")
-                        
-        except Exception as e:
-            resultado["errores"].append(f"Error al leer el archivo: {str(e)}")
-        
-        return resultado
-
-    def listar_csvs_carpeta(self, carpeta="importaciones/"):
-        import os
-        import glob
-        
-        if not os.path.exists(carpeta):
-            os.makedirs(carpeta, exist_ok=True)
-            return []
-        
-        patron = os.path.join(carpeta, "*.csv")
-        archivos = glob.glob(patron)
-        archivos.sort()
-        
-        return archivos
 
     def agregar_cedula_permitida(self, cedula, tipo):
         return self.facade_datos.agregar_cedula_permitida(cedula, tipo)
