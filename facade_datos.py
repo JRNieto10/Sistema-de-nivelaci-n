@@ -53,6 +53,7 @@ class FacadeDatos:
                     else:
                         json.dump([], f, ensure_ascii=False, indent=4)
 
+    # Métodos para gestión de permitidos (usados por gestionar_permitidos.py)
     def agregar_cedula_permitida(self, cedula, tipo):
         return self.gestion_permitidos.agregar_cedula(cedula, tipo)
 
@@ -65,6 +66,7 @@ class FacadeDatos:
     def listar_cedulas(self):
         return self.gestion_permitidos.listar_cedulas()
 
+    # Métodos para gestión de horarios (usados por otros módulos)
     def guardar_horario_docente(self, docente, cursos):
         if hasattr(docente, 'horario'):
             self.gestor_horarios_docentes.guardar_horario_docente(docente, cursos)
@@ -96,6 +98,7 @@ class FacadeDatos:
         for paralelo in self.lista_paralelos:
             print(f"- {paralelo.nombre if hasattr(paralelo, 'nombre') else paralelo}")
 
+    # Métodos para consulta de usuarios (usados por módulos de estudiantes)
     def obtener_estudiante(self, cedula):
         ruta_estudiantes = os.path.join(self.ruta_base, "estudiantes.json")
         if os.path.exists(ruta_estudiantes):
@@ -144,6 +147,7 @@ class FacadeDatos:
             return self.obtener_personal(cedula)
         return None
 
+    # Métodos para gestión de matrículas (usados por módulos de estudiantes)
     def cargar_estado_matricula(self, cedula):
         if not cedula:
             return None
@@ -169,6 +173,7 @@ class FacadeDatos:
         except Exception:
             pass
 
+    # Métodos de verificación de existencia (usados por módulos de estudiantes)
     def verificar_estudiante_existe(self, cedula):
         ruta_estudiantes = os.path.join(self.ruta_base, "estudiantes.json")
         if os.path.exists(ruta_estudiantes):
@@ -217,6 +222,7 @@ class FacadeDatos:
             return self.verificar_personal_existe(cedula)
         return False
 
+    # Métodos para búsqueda de paralelos (usados por módulos de estudiantes)
     def buscar_paralelos(self, carrera):
         paralelos = []
         ruta_carrera = os.path.join(self.ruta_base, carrera)
@@ -251,6 +257,7 @@ class FacadeDatos:
         ruta_carrera = os.path.join(self.ruta_base, carrera)
         return os.path.exists(ruta_carrera)
 
+    # Métodos para carga de datos (usados por módulos de estudiantes y otros)
     def cargar_docentes_desde_json(self):
         try:
             ruta = os.path.join(self.ruta_base, "docentes.json")
@@ -281,6 +288,7 @@ class FacadeDatos:
         except Exception:
             return []
 
+    # Métodos para guardado de cursos y carreras (usados por módulos de creación)
     def guardar_curso(self, carrera_nombre, curso_nombre, materias_con_docentes):
         return self.almacenamiento_cursos.guardar_curso(carrera_nombre, curso_nombre, materias_con_docentes)
 
@@ -290,6 +298,7 @@ class FacadeDatos:
     def guardar_paralelos(self, carrera_nombre, curso_nombre, paralelos_data):
         return self.almacenamiento_cursos.guardar_paralelos(carrera_nombre, curso_nombre, paralelos_data)
 
+    # Métodos para gestión de carreras (usados por facade.py)
     def guardar_carrera(self, carrera):
         return self.almacenamiento_carreras.guardar_carrera(carrera)
 
@@ -308,6 +317,7 @@ class FacadeDatos:
     def obtener_asignaturas_carrera(self, id_carrera):
         return self.almacenamiento_carreras.obtener_asignaturas_carrera(id_carrera)
 
+    # Métodos para gestión de usuarios (usados por facade.py)
     def comprobar_duplicados(self, cedula, rol):
         return self.almacenamiento_usuarios.comprobar_duplicados(cedula, rol)
 

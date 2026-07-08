@@ -4,10 +4,16 @@ from estructura.estudiantes import Estudiante
 from estructura.docentes import Docente
 from estructura.personal_administrativo import Personal
 from estructura.asignatura import Asignatura
+from estructura.calificaciones import Calificaciones
 from estructura.carrera import Carrera
 from estructura.tutoria import Tutoria
 from estructura.gestor_curso import Gestor_curso
 from estructura.cursos import Curso
+from estructura.registro import Registro
+from estructura.Almacenamieto import Almacenamiento_Usuarios
+from estructura.Almacenamiento_ingreso import GestorAlmacenamiento
+from estructura.Autenticacion import Autenticacion
+from estructura.fabrica_usuarios import FabricaUsuarios
 from estructura.gest_permitidos import GestionPermitidos
 from facade_datos import FacadeDatos
 
@@ -27,8 +33,13 @@ class FacadeSistemaAcademico:
     def _inicializar_subsistemas(self):
         self.gestor_horarios = GuardarHorarios()
         self.gestor_horarios_docentes = horariodocentealmacenar()
+        self.registro = Registro()
+        self.almacenamiento_usuarios = GestorAlmacenamiento()
+        self.autenticacion = Autenticacion(Almacenamiento_Usuarios())
         self.gestor_cursos = Gestor_curso()
         self.gestion_permitidos = GestionPermitidos()
+        self.fabrica_usuarios = FabricaUsuarios()
+        self.almacenamiento_verificacion = Almacenamiento_Usuarios()
 
     def crear_administrador(self, nombre, cedula, apellido, correo, contrasena):
         administrador = Personal(nombre, cedula, apellido, correo, contrasena, "personal")
@@ -69,6 +80,26 @@ class FacadeSistemaAcademico:
         }, "estudiante")
         return estudiante
 
+    def _registrar_usuario(self, nombre, cedula, apellido, correo, contrasena, rol):
+        if not self.facade_datos.verificar_cedula(cedula):
+            return False, "cedula no permitida"
+        if self.facade_datos.comprobar_duplicados(cedula, rol):
+            return False, "ese usuario ya existe"
+        usuario = {
+            "cedula": cedula,
+            "nombre": nombre,
+            "apellido": apellido,
+            "correo": correo,
+            "contrasena": contrasena,
+            "rol": rol,
+        }
+        if self.facade_datos.agregar_usuario(usuario, rol):
+            usuario_obj = self.fabrica_usuarios.crear_usuario(usuario)
+            self.lista_usuarios.append(usuario_obj)
+            return True, f"el {nombre} quedo registrado"
+        return False, "fallo el registro"
+
+    # Métodos para gestión de carreras
     def crear_carrera(self, id, area, nombre, modalidad):
         if self.obtener_carrera_por_id(id):
             return None, "Ya existe una carrera con ese ID"
@@ -160,3 +191,29 @@ class FacadeSistemaAcademico:
         tutoria = Tutoria(id, fecha, tema, estudiantes)
         self.lista_tutorias.append(tutoria)
         return tutoria
+    
+    # En facade.py, agregar este método:
+
+    def registrar_usuario(self, nombre="", cedula="", apellido="", correo="", contrasena="", rol=""):
+        """
+        Registra un usuario en el sistema
+        """
+        # Verificar si la cédula está permitida
+        if not self.facade_datos.verificar_cedula(cedula):
+            return False, "Cédula no permitida"
+        
+        # Verificar si el usuario ya existe
+        if self.facade_datos.verificar_usuario_existe(cedula, rol):
+            return False, "El usuario ya existe"
+        
+        # Crear usuario según el rol
+        if rol == "estudiante":
+            usuario = self.crear_estudiante(nombre, cedula, apellido, correo, contrasena)
+        elif rol == "docente":
+            usuario = self.crear_docente(nombre, cedula, apellido, correo, contrasena)
+        elif rol == "personal" or rol == "administrador":
+            usuario = self.crear_administrador(nombre, cedula, apellido, correo, contrasena)
+        else:
+            return False, "Rol no válido"
+        
+        return True, f"Usuario {nombre} registrado exitosamente"
