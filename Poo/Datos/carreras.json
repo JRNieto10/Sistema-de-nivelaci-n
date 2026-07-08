@@ -1,0 +1,15 @@
+[
+    {
+        "id": "q",
+        "nombre": "q",
+        "duracion": "q",
+        "materias": [
+            {
+                "id": "q",
+                "nombre": "q",
+                "creditos": 0,
+                "docente_asignado": "a"
+            }
+        ]
+    }
+]

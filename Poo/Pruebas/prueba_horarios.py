@@ -1,8 +1,11 @@
-# Importamos la clase que gestiona los horarios y los arch
+# Importamos la clase que gestiona los horarios y los archivos
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from estructura.Almacenamiento_horario import GuardarHorarios
+# CAMBIO 1: Importas tu clase Visualizador_Horarios (ajusta la ruta de importación si está en otro archivo)
+from estructura.VisualizacionDeHorarios import Visualizador_Horarios 
+
 # =====================================================================
 # SIMULACIÓN DE LA CLASE PARALELO (Para que el main pueda crear objetos)
 # =====================================================================
@@ -24,7 +27,6 @@ if __name__ == "__main__":
     gestor = GuardarHorarios()
 
     # 2. Creamos datos de prueba (Simulando la entrada del sistema)
-    # Nota cómo estructuramos el diccionario "horario" para que funcione con tu método mostrar
     horario_paralelo_a = {
         "Matemáticas": {"hora": "07:15 - 09:00", "docente": "Ing. Carlos Pérez"},
         "Programación": {"hora": "09:00 - 10:45", "docente": "Ing. Ana Gómez"}
@@ -35,31 +37,34 @@ if __name__ == "__main__":
         "Base de Datos": {"hora": "20:15 - 22:00", "docente": "Msc. Marta Rivas"}
     }
 
-    # Creamos una lista de objetos de la clase Paralelo
-    # Incluimos repetidos adrede para probar tus filtros (Nombres e IDs duplicados)
     lista_nuevos_paralelos = [
         Paralelo(10, "Paralelo A", "Matutina", "Aula 101", horario_paralelo_a),
         Paralelo(20, "Paralelo B", "Nocturna", "Aula 102", horario_paralelo_b),
-        Paralelo(30, "Paralelo A", "Matutina", "Aula 101", {}),  # DUPLICADO EN NOMBRE (Tu set lo filtrará)
-        Paralelo(10, "Paralelo C", "Vespertina", "Aula 103", {}) # DUPLICADO EN ID (La fachada lo filtrará)
+        Paralelo(30, "Paralelo A", "Matutina", "Aula 101", {}),  # DUPLICADO EN NOMBRE
+        Paralelo(10, "Paralelo C", "Vespertina", "Aula 103", {}) # DUPLICADO EN ID
     ]
 
     # 3. PROBAMOS LA ESCRITURA (Guardar los paralelos)
     print("--- PASO 1: Intentando guardar la lista de paralelos ---")
     gestor.guardar_paralelos(lista_nuevos_paralelos)
     
-    # Intentamos guardar lo mismo otra vez para ver el comportamiento del validador
     print("\n--- PASO 2: Intentando guardar la misma lista de nuevo (Simulación de re-ejecución) ---")
     gestor.guardar_paralelos(lista_nuevos_paralelos)
 
     # 4. PROBAMOS LA LECTURA Y MUESTRA DE DATOS
-    print("\n--- PASO 3: Probando visualización de horarios (Método Mostrar) ---")
+    # CAMBIO 2: Ahora usamos la propiedad .horario del Visualizador_Horarios
+    print("\n--- PASO 3: Probando visualización de horarios (Propiedad .horario) ---")
     
-    # Caso Exitoso: El paralelo existe en el archivo
-    gestor.mostrar_horario_paralelo("Paralelo A")
-    gestor.mostrar_horario_paralelo("Paralelo B")
+    # Caso Exitoso 1: Paralelo A
+    v_paralelo_a = Visualizador_Horarios("paralelo", "Paralelo A")
+    v_paralelo_a.horario  # <- Invocación como propiedad (sin paréntesis)
+    
+    # Caso Exitoso 2: Paralelo B
+    v_paralelo_b = Visualizador_Horarios("paralelo", "Paralelo B")
+    v_paralelo_b.horario  # <- Invocación como propiedad
     
     # Caso Fallido: El paralelo no existe
-    gestor.mostrar_horario_paralelo("Paralelo Z")
+    v_paralelo_z = Visualizador_Horarios("paralelo", "Paralelo Z")
+    v_paralelo_z.horario  # <- Nos dará el mensaje de "no se encontró..."
 
     print("\n=== PRUEBA FINALIZADA ===")

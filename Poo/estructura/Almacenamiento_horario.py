@@ -2,7 +2,7 @@ from estructura.facade_json import Facada_json
 
 class GuardarHorarios:
     def __init__(self):
-        self.ruta_paralelos = "Poo/Datos/paralelos.json"
+        self.ruta_paralelos = "Datos/paralelos.json"
         self.json = Facada_json(self.ruta_paralelos)
     
     def guardar_paralelos(self, paralelos):
@@ -27,22 +27,22 @@ class GuardarHorarios:
         else:
             print("No se agregaron nuevos datos (todos los IDs ya existían en el archivo).")
     
-    def cargar_paralelos(self):
-        return self.json.repo.leer_todo()
+    # def cargar_paralelos(self):
+    #     return self.json.repo.leer_todo()
     
-    def obtener_horario_paralelo(self, nombre_paralelo):
-        paralelos = self.cargar_paralelos()
-        for paralelo in paralelos:
-            if paralelo["nombre"] == nombre_paralelo:
-                return paralelo["horario"]
-        return None
+    # def obtener_horario_paralelo(self, nombre_paralelo):
+    #     paralelos = self.cargar_paralelos()
+    #     for paralelo in paralelos:
+    #         if paralelo["nombre"] == nombre_paralelo:
+    #             return paralelo["horario"]
+    #     return None
     
-    def mostrar_horario_paralelo(self, nombre_paralelo):
-        horario = self.obtener_horario_paralelo(nombre_paralelo)
-        if not horario:
-            print(f"No se encontro el paralelo {nombre_paralelo}")
-            return
+    # def mostrar_horario_paralelo(self, nombre_paralelo):
+    #     horario = self.obtener_horario_paralelo(nombre_paralelo)
+    #     if not horario:
+    #         print(f"No se encontro el paralelo {nombre_paralelo}")
+    #         return
         
-        print(f"\nHorario del {nombre_paralelo}\n")
-        for materia, info in horario.items():
-            print(f"    {info['hora']} - {materia} ({info['docente']})")
+    #     print(f"\nHorario del {nombre_paralelo}\n")
+    #     for materia, info in horario.items():
+    #         print(f"    {info['hora']} - {materia} ({info['docente']})")

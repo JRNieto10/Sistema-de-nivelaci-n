@@ -12,17 +12,13 @@ class DocenteMock:
 
 # Importaciones correctas de tus gestores
 from estructura.Almacenamiento_horario_individal import horariodocentealmacenar 
-
 from estructura.VisualizacionDeHorarios import Visualizador_Horarios
 
 def ejecutar_prueba():
     print("=== INICIANDO PRUEBA DEL SISTEMA DE HORARIOS ===")
-    roles = ["Docente","Estudiante"]
+    roles = ["Docente", "Estudiante"]
+    
     for rol in roles:
-
-        almacenador = horariodocentealmacenar(rol)
-        visualizador = Visualizador_Horarios(rol)
-        
         # Docente de prueba
         persona1 = DocenteMock(
             cedula="1723456789", 
@@ -31,7 +27,12 @@ def ejecutar_prueba():
             correo="kevin.mendoza@universidad.edu.ec"
         )
         
-        # NUEVO: Diccionario estructurado incluyendo la clave 'dia' dentro de cada materia
+        almacenador = horariodocentealmacenar(rol)
+        
+        # CAMBIO 1: El visualizador ahora se crea pasándole el rol Y la cédula (identificador)
+        visualizador = Visualizador_Horarios(rol, persona1.cedula)
+        
+        # Diccionario estructurado de prueba
         horario_prueba = {
             "Paralelo A": {
                 "jornada": "Matutina",
@@ -63,13 +64,15 @@ def ejecutar_prueba():
         }
         
         # 1. Guardar o actualizar
-        print(f"\n[1] Guardando horario para el docente {persona1.nombre}...")
+        print(f"\n[1] Guardando horario para el docente {persona1.nombre} ({rol})...")
         almacenador.guardar_horario_docente(persona1, horario_prueba)
         print("¡Datos persistidos de forma segura en el JSON!")
         
-        # 2. Visualizar resultado con días incluidos
+        # 2. Visualizar resultado usando la nueva @property inteligente
         print(f"\n[2] Consultando el horario asignado a la cédula: {persona1.cedula}...")
-        visualizador.mostrar_horario_docente(persona1.cedula)
+        
+        # CAMBIO 2: Invocamos la propiedad única '.horario' sin paréntesis ()
+        visualizador.horario 
 
 if __name__ == "__main__":
     ejecutar_prueba()

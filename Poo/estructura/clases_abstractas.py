@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 
 class Usuarios(ABC):
-    def __init__(self,nombre,apellido,correo,contrasena,rol):
+    def __init__(self,nombre,apellido,correo,contrasena,rol,cedula):
         self.nombre = nombre
         self.apellido = apellido
+        self.cedula = cedula
         self._correo = correo
         self.__contrasena = contrasena
         self.rol = rol
@@ -24,14 +25,10 @@ class Usuarios(ABC):
     def correo(self,correo_n):
         self._correo = correo_n
 
-    @abstractmethod
-    def actualizar_datos(self):
-        print(f"El {self.rol} {self.nombre} ha actualizado sus datos ")
-
 
     @abstractmethod
     def cambiar_contraseña(self):
-        print(f"El {self.rol} {self.nombre} ha cambiado su contraseña ")
+        pass
 
 
 

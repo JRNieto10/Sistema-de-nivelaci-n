@@ -4,10 +4,10 @@ from estructura.facade_json import Facada_json
 class horariodocentealmacenar:
     def __init__(self,rol):
         self.rol = rol.lower()
-        self.ruta_horarios = f"Poo/Datos/horarios_{self.rol}.json"
+        self.ruta_horarios = f"Datos/horarios_{self.rol}.json"
         self.json = Facada_json(self.ruta_horarios)
     
-    def guardar_horario_docente(self, datos, horario):
+    def guardar_horario(self, datos, horario):
         datos_cargados = self.json.repo.leer_todo()
         
         encontrado = False

@@ -1,0 +1,26 @@
+[
+    {
+        "nombre": "12",
+        "apellido": "13",
+        "correo": "q",
+        "contraseña": "q",
+        "rol": "Personal",
+        "cedula": "1"
+    },
+    {
+        "cedula": "a",
+        "nombre": "e",
+        "apellido": "a",
+        "correo": "a",
+        "contraseña": "a",
+        "rol": "Estudiante"
+    },
+    {
+        "cedula": "z",
+        "nombre": "juan",
+        "apellido": "z",
+        "correo": "z",
+        "contraseña": "z",
+        "rol": "Personal"
+    }
+]
