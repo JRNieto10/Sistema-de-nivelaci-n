@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from interfaz_personal.gestionar_carrera import Gestionar_carrera
+from interfaz_personal.gestionar_permitidos import Permitidos_gestionar
 
 class inicial_personal(ctk.CTkToplevel):
     def __init__(self, inicio):
@@ -7,6 +8,7 @@ class inicial_personal(ctk.CTkToplevel):
         self.title("Ventana Personal")
         self.inicio = inicio
         self.gestion = None
+        self.permitidos = None
         self.geometry("900x500")
 
         self.frame_principal = ctk.CTkFrame(self)
@@ -58,5 +60,28 @@ class inicial_personal(ctk.CTkToplevel):
             self.gestion.deiconify()
             if hasattr(self.gestion, 'actualizar_lista_carreras'):
                 self.gestion.actualizar_lista_carreras()
+
+        self.withdraw()
+
+    def boton_gestionar_permitidos(self):
+        self.bton_gestionar_permitidos = ctk.CTkButton(
+            self.frame_principal,
+            text="Gestionar Cedulas Permitidas",
+            command=self.gestionar_permitidos_directo,
+            fg_color="#9b59b6",
+            hover_color="#8e44ad",
+            width=250,
+            height=50,
+            font=("Arial", 14)
+        )
+        self.bton_gestionar_permitidos.pack(pady=15)
+
+    def gestionar_permitidos_directo(self):
+        if self.permitidos is None or not self.permitidos.winfo_exists():
+            self.permitidos = Permitidos_gestionar(self)
+        else:
+            self.permitidos.deiconify()
+            if hasattr(self.permitidos, 'cargar_cedulas'):
+                self.permitidos.cargar_cedulas()
 
         self.withdraw()

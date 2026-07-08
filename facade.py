@@ -217,3 +217,98 @@ class FacadeSistemaAcademico:
             return False, "Rol no válido"
         
         return True, f"Usuario {nombre} registrado exitosamente"
+        
+    def importar_cedulas_csv(self, ruta_csv):
+        import csv
+        import os
+        
+        resultado = {"exitosos": 0, "duplicados": 0, "errores": []}
+        
+        try:
+            if not os.path.exists(ruta_csv):
+                resultado["errores"].append(f"Archivo no encontrado: {ruta_csv}")
+                return resultado
+                
+            with open(ruta_csv, 'r', encoding='utf-8') as archivo:
+                muestra = archivo.read(1024)
+                archivo.seek(0)
+                
+                if ';' in muestra:
+                    delimitador = ';'
+                elif '\t' in muestra:
+                    delimitador = '\t'
+                else:
+                    delimitador = ','
+                
+                reader = csv.DictReader(archivo, delimiter=delimitador)
+                
+                if 'cedula' not in reader.fieldnames or 'tipo' not in reader.fieldnames:
+                    resultado["errores"].append("El CSV debe tener columnas 'cedula' y 'tipo'")
+                    return resultado
+                
+                for fila in reader:
+                    try:
+                        cedula = fila.get('cedula', '').strip()
+                        tipo = fila.get('tipo', '').strip().lower()
+                        
+                        if not cedula or not tipo:
+                            resultado["errores"].append(f"Datos incompletos: {fila}")
+                            continue
+                        
+                        if tipo not in ["estudiante", "docente", "personal"]:
+                            resultado["errores"].append(f"Tipo inválido '{tipo}' para cédula {cedula}")
+                            continue
+                        
+                        if self.agregar_cedula_permitida(cedula, tipo):
+                            resultado["exitosos"] += 1
+                        else:
+                            resultado["duplicados"] += 1
+                            
+                    except Exception as e:
+                        resultado["errores"].append(f"Error procesando {fila}: {str(e)}")
+                        
+        except Exception as e:
+            resultado["errores"].append(f"Error al leer el archivo: {str(e)}")
+        
+        return resultado
+
+    def listar_csvs_carpeta(self, carpeta="importaciones/"):
+        import os
+        import glob
+        
+        if not os.path.exists(carpeta):
+            os.makedirs(carpeta, exist_ok=True)
+            return []
+        
+        patron = os.path.join(carpeta, "*.csv")
+        archivos = glob.glob(patron)
+        archivos.sort()
+        
+        return archivos
+
+    def agregar_cedula_permitida(self, cedula, tipo):
+        return self.facade_datos.agregar_cedula_permitida(cedula, tipo)
+
+    def eliminar_cedula_permitida(self, cedula, tipo):
+        return self.facade_datos.eliminar_cedula_permitida(cedula, tipo)
+
+    def verificar_cedula(self, cedula):
+        return self.facade_datos.verificar_cedula(cedula)
+
+    def agregar_cedulas_masivas(self, cedulas, tipo):
+        return self.facade_datos.agregar_cedulas_masivas(cedulas, tipo)
+
+    def eliminar_cedulas_masivas(self, cedulas, tipo):
+        return self.facade_datos.eliminar_cedulas_masivas(cedulas, tipo)
+
+    def limpiar_todas_cedulas(self):
+        return self.facade_datos.limpiar_todas_cedulas()
+
+    def obtener_todas_cedulas(self):
+        return self.facade_datos.obtener_todas_cedulas()
+
+    def actualizar_cedulas_completas(self, datos_completos):
+        return self.facade_datos.actualizar_cedulas_completas(datos_completos)
+
+    def crear_archivos_directorios(self):
+        self.facade_datos._crear_directorios_archivos()

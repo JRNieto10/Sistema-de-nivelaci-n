@@ -323,3 +323,12 @@ class FacadeDatos:
 
     def agregar_usuario(self, usuario, rol):
         return self.almacenamiento_usuarios.agregar_usuario(usuario, rol)
+    
+    def obtener_todas_cedulas(self):
+        return self.gestion_permitidos.listar_cedulas()
+
+    def agregar_cedulas_masivas(self, cedulas, tipo):
+        return self.gestion_permitidos.agregar_multiple(cedulas, tipo)
+
+    def limpiar_todas_cedulas(self):
+        return self.gestion_permitidos.limpiar_todos()

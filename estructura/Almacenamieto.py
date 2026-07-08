@@ -49,7 +49,6 @@ class Almacenamiento_Usuarios:
                 return True
         return False
     
-    
     def agregar_usuario(self, usuario, tipo_usuario):
         if self.comprobar_duplicados(usuario['cedula'], tipo_usuario):
             return False
@@ -68,9 +67,10 @@ class Almacenamiento_Usuarios:
         usuarios.append(usuario)
         self._guardar_datos(ruta, usuarios)
         return True
-    def verificar_credenciales(self,cedula,contra):
-        ruta="Datos/estudiantes.json"
+    
+    def verificar_credenciales(self, cedula, contra):
+        ruta = "Datos/estudiantes.json"
         usuarios = self._cargar_datos(ruta)
         for usuario_existente in usuarios:
-            if usuario_existente.get('cedula') == cedula and  usuario_existente.get('contrasena') == contra :
+            if usuario_existente.get('cedula') == cedula and usuario_existente.get('contrasena') == contra:
                 return usuario_existente

@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from facade import FacadeSistemaAcademico
 import tkinter.messagebox as messagebox
+from tkinter import filedialog
 
 class Permitidos_gestionar(ctk.CTkToplevel):
     def __init__(self, principal, carrera_actual=None):
@@ -9,7 +10,7 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         self.principal = principal
         self.carrera_actual = carrera_actual
         self.sistema = FacadeSistemaAcademico()
-        self.geometry("900x600")
+        self.geometry("900x700")
 
         self.cedula_seleccionada = None
         self.tipo_seleccionado = None
@@ -75,6 +76,28 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         )
         self.btn_agregar.pack(side="left", padx=10)
 
+        self.btn_importar_csv = ctk.CTkButton(
+            frame_input,
+            text="Importar CSV",
+            command=self.importar_desde_csv,
+            fg_color="#f39c12",
+            hover_color="#e67e22",
+            width=150,
+            height=35
+        )
+        self.btn_importar_csv.pack(side="left", padx=10)
+
+        self.btn_importar_masivo = ctk.CTkButton(
+            frame_input,
+            text="Importar Masivo",
+            command=self.importar_masivo_ejemplo,
+            fg_color="#9b59b6",
+            hover_color="#8e44ad",
+            width=150,
+            height=35
+        )
+        self.btn_importar_masivo.pack(side="left", padx=10)
+
         ctk.CTkFrame(self.frame_principal, height=2, fg_color="#ccc").pack(fill="x", padx=10, pady=10)
 
         self.frame_lista = ctk.CTkFrame(self.frame_principal)
@@ -104,6 +127,17 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         )
         self.btn_eliminar.pack(side="left", padx=10)
 
+        self.btn_limpiar_todos = ctk.CTkButton(
+            self.frame_botones,
+            text="Limpiar Todas",
+            command=self.limpiar_todas_cedulas,
+            fg_color="#e74c3c",
+            hover_color="#c0392b",
+            width=200,
+            height=40
+        )
+        self.btn_limpiar_todos.pack(side="left", padx=10)
+
         self.btn_volver = ctk.CTkButton(
             self.frame_botones,
             text="Volver",
@@ -128,7 +162,7 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
 
-        datos = self.sistema.datos.listar_cedulas()
+        datos = self.sistema.obtener_todas_cedulas()
 
         total = len(datos["estudiantes"]) + len(datos["docentes"]) + len(datos["personal"])
 
@@ -247,7 +281,7 @@ class Permitidos_gestionar(ctk.CTkToplevel):
             "Personal": "personal"
         }
 
-        existe = self.sistema.datos.verificar_cedula(cedula)
+        existe = self.sistema.verificar_cedula(cedula)
         if existe:
             self.label_mensaje.configure(
                 text=f"La cedula {cedula} ya esta registrada como {existe}",
@@ -255,7 +289,7 @@ class Permitidos_gestionar(ctk.CTkToplevel):
             )
             return
 
-        resultado = self.sistema.datos.agregar_cedula_permitida(cedula, rol_dict[rol])
+        resultado = self.sistema.agregar_cedula_permitida(cedula, rol_dict[rol])
 
         if resultado:
             self.label_mensaje.configure(text=f"Cedula {cedula} agregada como {rol}", text_color="#2ecc71")
@@ -268,6 +302,62 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         else:
             self.label_mensaje.configure(text="Error al agregar la cedula", text_color="red")
 
+    def importar_desde_csv(self):
+        archivo = filedialog.askopenfilename(
+            title="Seleccionar archivo CSV",
+            filetypes=[("Archivos CSV", "*.csv"), ("Todos los archivos", "*.*")]
+        )
+
+        if not archivo:
+            return
+
+        resultado = self.sistema.importar_cedulas_csv(archivo)
+
+        mensaje = "Importacion completada:\n"
+        mensaje += f"Agregadas: {resultado['exitosos']}\n"
+        mensaje += f"Duplicadas: {resultado['duplicados']}\n"
+
+        if resultado['errores']:
+            mensaje += f"\nErrores:\n" + "\n".join(resultado['errores'][:5])
+            if len(resultado['errores']) > 5:
+                mensaje += f"\n... y {len(resultado['errores']) - 5} errores mas"
+
+        messagebox.showinfo("Resultado de Importacion", mensaje)
+        self.cargar_cedulas()
+
+    def importar_masivo_ejemplo(self):
+        cedulas_ejemplo = [
+            "151515151",
+            "161616161",
+            "171717171",
+            "181818181",
+            "191919191",
+            "202020202"
+        ]
+
+        resultado = self.sistema.agregar_cedulas_masivas(cedulas_ejemplo, "estudiante")
+
+        if resultado:
+            messagebox.showinfo(
+                "Importacion Masiva",
+                f"Se importaron {len(resultado)} cedulas de estudiantes:\n" + "\n".join(resultado)
+            )
+            self.cargar_cedulas()
+        else:
+            messagebox.showwarning("Importacion Masiva", "No se importaron nuevas cedulas (todas ya existian)")
+
+    def limpiar_todas_cedulas(self):
+        respuesta = messagebox.askyesno(
+            "Confirmar",
+            "Esta seguro de eliminar TODAS las cedulas permitidas?\nEsta accion no se puede deshacer."
+        )
+
+        if respuesta:
+            self.sistema.limpiar_todas_cedulas()
+            self.cargar_cedulas()
+            self.label_mensaje.configure(text="Todas las cedulas han sido eliminadas", text_color="#e74c3c")
+            messagebox.showinfo("Limpiar", "Todas las cedulas permitidas han sido eliminadas")
+
     def eliminar_cedula(self):
         if not self.cedula_seleccionada:
             messagebox.showwarning("Advertencia", "Seleccione una cedula para eliminar")
@@ -279,7 +369,7 @@ class Permitidos_gestionar(ctk.CTkToplevel):
         )
 
         if respuesta:
-            resultado = self.sistema.datos.eliminar_cedula_permitida(
+            resultado = self.sistema.eliminar_cedula_permitida(
                 self.cedula_seleccionada,
                 self.tipo_seleccionado
             )
