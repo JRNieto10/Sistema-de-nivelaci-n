@@ -1,14 +1,25 @@
+# validaciones/login_estudiantes.py
 import json
+import os
 
-with open('Datos/estudiantes.json', 'r', encoding='utf-8') as archivo:
-    estudiantes  = json.load(archivo)
-class login_estudiantes:
-    def __init__(self, cedula, contrasena):
-        self.cedula = cedula
-        self.contrasena = contrasena
-
-    def validar_login(self):
+def login_estudiantes(cedula, contrasena):
+    ruta_estudiantes = 'Datos/estudiantes.json'
+    
+    # Verificar si el archivo existe
+    if not os.path.exists(ruta_estudiantes):
+        return False, "No hay estudiantes registrados en el sistema"
+    
+    try:
+        with open(ruta_estudiantes, 'r', encoding='utf-8') as archivo:
+            estudiantes = json.load(archivo)
+            
         for estudiante in estudiantes:
-            if estudiante["cedula"] == self.cedula and estudiante["contrasena"] == self.contrasena:
-                return True
-        return False
+            if estudiante.get('cedula') == cedula and estudiante.get('contrasena') == contrasena:
+                return True, "Login exitoso"
+        
+        return False, "Cédula o contraseña incorrecta"
+        
+    except json.JSONDecodeError:
+        return False, "Error en el formato del archivo de estudiantes"
+    except Exception as e:
+        return False, f"Error al leer el archivo: {e}"
