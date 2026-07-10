@@ -1,0 +1,62 @@
+[
+    {
+        "id": "ACT-0001",
+        "docente": "1717171717",
+        "paralelo_id": "PAR-001",
+        "materia": "Programacion Orientada a Objetos",
+        "segmento": "Actuacion",
+        "nombre": "a",
+        "descripcion": "",
+        "fecha_limite": "2026-07-10 23:59",
+        "fecha_cierre": "2026-07-11 23:59",
+        "creada_en": "2026-07-09 21:08"
+    },
+    {
+        "id": "ACT-0002",
+        "docente": "1717171717",
+        "paralelo_id": "POO2",
+        "materia": "Programacion Orientada a Objetos",
+        "segmento": "Actuacion",
+        "nombre": "a",
+        "descripcion": "",
+        "fecha_limite": "2026-07-10 23:59",
+        "fecha_cierre": "2026-07-11 23:59",
+        "creada_en": "2026-07-09 21:10"
+    },
+    {
+        "id": "ACT-0003",
+        "docente": "1717171717",
+        "paralelo_id": "POO2",
+        "materia": "Programacion Orientada a Objetos",
+        "segmento": "Produccion",
+        "nombre": "b",
+        "descripcion": "",
+        "fecha_limite": "2026-07-10 23:59",
+        "fecha_cierre": "2026-07-11 23:59",
+        "creada_en": "2026-07-09 21:11"
+    },
+    {
+        "id": "ACT-0004",
+        "docente": "1717171717",
+        "paralelo_id": "POO2",
+        "materia": "Programacion Orientada a Objetos",
+        "segmento": "Practica",
+        "nombre": "c",
+        "descripcion": "",
+        "fecha_limite": "2026-07-11 23:59",
+        "fecha_cierre": "2026-07-11 23:59",
+        "creada_en": "2026-07-09 21:11"
+    },
+    {
+        "id": "ACT-0005",
+        "docente": "1717171717",
+        "paralelo_id": "POO2",
+        "materia": "Programacion Orientada a Objetos",
+        "segmento": "Evaluacion final",
+        "nombre": "d",
+        "descripcion": "",
+        "fecha_limite": "2026-07-10 23:59",
+        "fecha_cierre": "2026-07-11 23:59",
+        "creada_en": "2026-07-09 21:11"
+    }
+]

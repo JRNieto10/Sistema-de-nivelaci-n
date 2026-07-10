@@ -1,0 +1,10 @@
+[
+    {
+        "cedula": "0000000000",
+        "nombre": "Administrador",
+        "apellido": "Principal",
+        "correo": "admin@nivelacion.com",
+        "contraseña": "admin1234",
+        "rol": "Personal"
+    }
+]

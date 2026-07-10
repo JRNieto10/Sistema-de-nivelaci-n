@@ -1,0 +1,162 @@
+[
+    {
+        "id": "POO2",
+        "nombre": "Tercero B",
+        "jornada": "Vespertina",
+        "materia": "Programacion Orientada a Objetos",
+        "materias": [
+            "Programacion Orientada a Objetos"
+        ],
+        "docente_cedula": "1717171717",
+        "horario": {
+            "dia": "Lunes",
+            "hora_inicio": "14:00",
+            "hora_fin": "16:00",
+            "aula": "Aula 1",
+            "jornada": "Vespertina"
+        },
+        "estudiantes": [
+            "1300000000"
+        ],
+        "docentes_por_materia": {
+            "Programacion Orientada a Objetos": "1717171717"
+        },
+        "horarios_por_materia": {
+            "Programacion Orientada a Objetos": {
+                "dia": "Lunes",
+                "hora_inicio": "14:00",
+                "hora_fin": "16:00",
+                "aula": "Aula 1",
+                "jornada": "Vespertina"
+            }
+        },
+        "matriculas_por_materia": {
+            "Programacion Orientada a Objetos": [
+                "1300000000"
+            ]
+        }
+    },
+    {
+        "id": "MOO2",
+        "nombre": "Tercero B",
+        "jornada": "Vespertina",
+        "materia": "Modelado Orientado a Objetos",
+        "materias": [
+            "Modelado Orientado a Objetos"
+        ],
+        "docente_cedula": null,
+        "horario": null,
+        "estudiantes": []
+    },
+    {
+        "id": "RC2",
+        "nombre": "Tercero B",
+        "jornada": "Vespertina",
+        "materia": "Redes de las Computadoras",
+        "materias": [
+            "Redes de las Computadoras"
+        ],
+        "docente_cedula": null,
+        "horario": null,
+        "estudiantes": []
+    },
+    {
+        "id": "PAR-001",
+        "nombre": "Tercero A",
+        "jornada": "Matutina",
+        "materia": "Programacion Orientada a Objetos",
+        "materias": [
+            "Programacion Orientada a Objetos"
+        ],
+        "docente_cedula": "1717171717",
+        "horario": {
+            "dia": "Lunes",
+            "hora_inicio": "07:00",
+            "hora_fin": "09:00",
+            "aula": "Aula 1",
+            "jornada": "Matutina"
+        },
+        "estudiantes": [],
+        "docentes_por_materia": {
+            "Programacion Orientada a Objetos": "1717171717"
+        },
+        "horarios_por_materia": {
+            "Programacion Orientada a Objetos": {
+                "dia": "Lunes",
+                "hora_inicio": "07:00",
+                "hora_fin": "09:00",
+                "aula": "Aula 1",
+                "jornada": "Matutina"
+            }
+        }
+    },
+    {
+        "id": "PAR-002",
+        "nombre": "Tercero A",
+        "jornada": "Matutina",
+        "materia": "Modelado Orientado a Objetos",
+        "materias": [
+            "Modelado Orientado a Objetos"
+        ],
+        "docente_cedula": "1818181818",
+        "horario": null,
+        "estudiantes": [],
+        "docentes_por_materia": {
+            "Modelado Orientado a Objetos": "1818181818"
+        }
+    },
+    {
+        "id": "PAR-003",
+        "nombre": "Tercero A",
+        "jornada": "Matutina",
+        "materia": "Redes de las Computadoras",
+        "materias": [
+            "Redes de las Computadoras"
+        ],
+        "docente_cedula": null,
+        "horario": null,
+        "estudiantes": []
+    },
+    {
+        "id": "PAR-004",
+        "nombre": "Tercero C",
+        "jornada": "Matutina",
+        "materia": "Programacion Orientada a Objetos",
+        "materias": [
+            "Programacion Orientada a Objetos"
+        ],
+        "docente_cedula": "1717171717",
+        "horario": {
+            "dia": "Lunes",
+            "hora_inicio": "09:00",
+            "hora_fin": "11:00",
+            "aula": "Aula 1",
+            "jornada": "Matutina"
+        },
+        "estudiantes": [],
+        "docentes_por_materia": {
+            "Programacion Orientada a Objetos": "1717171717"
+        },
+        "horarios_por_materia": {
+            "Programacion Orientada a Objetos": {
+                "dia": "Lunes",
+                "hora_inicio": "09:00",
+                "hora_fin": "11:00",
+                "aula": "Aula 1",
+                "jornada": "Matutina"
+            }
+        }
+    },
+    {
+        "id": "BIOLOGIA-A-M",
+        "nombre": "BIOLOGIA",
+        "jornada": "Matutina",
+        "materia": "plantas",
+        "materias": [
+            "plantas"
+        ],
+        "docente_cedula": null,
+        "horario": null,
+        "estudiantes": []
+    }
+]

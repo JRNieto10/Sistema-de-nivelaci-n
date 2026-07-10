@@ -1,0 +1,11 @@
+[
+    {
+        "nota_final": 10,
+        "segmentos": [
+            {"nombre": "Actuacion", "porcentaje": 25, "valor": 2.5},
+            {"nombre": "Produccion", "porcentaje": 25, "valor": 2.5},
+            {"nombre": "Practica", "porcentaje": 15, "valor": 1.5},
+            {"nombre": "Evaluacion final", "porcentaje": 35, "valor": 3.5}
+        ]
+    }
+]
