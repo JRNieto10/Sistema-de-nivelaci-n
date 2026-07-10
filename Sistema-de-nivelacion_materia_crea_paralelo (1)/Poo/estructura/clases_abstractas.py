@@ -45,3 +45,7 @@ class Usuarios(ABC):
     @abstractmethod
     def cambiar_contraseña(self, nueva_contra):
         pass
+    
+    @abstractmethod
+    def opciones_menu(self):
+        pass
