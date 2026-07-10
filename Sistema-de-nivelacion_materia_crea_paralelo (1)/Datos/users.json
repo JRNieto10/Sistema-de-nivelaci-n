@@ -1,0 +1,34 @@
+[
+    {
+        "cedula": "0000000000",
+        "nombre": "Administrador",
+        "apellido": "Principal",
+        "correo": "admin@nivelacion.com",
+        "contraseña": "admin1234",
+        "rol": "Personal"
+    },
+    {
+        "cedula": "0962306056",
+        "nombre": "Jessika Rosmary",
+        "apellido": "Nieto Hernandez",
+        "correo": "0962306056@nivelacion.com",
+        "contraseña": "123",
+        "rol": "Estudiante"
+    },
+    {
+        "cedula": "1717171717",
+        "nombre": "Jharol Antonio",
+        "apellido": "Ormaza Sabando",
+        "correo": "jharol@nivelacion.com",
+        "contraseña": "123",
+        "rol": "Docente"
+    },
+    {
+        "cedula": "1818181818",
+        "nombre": "Jordan Radley",
+        "apellido": "Chiquito Velasquez",
+        "correo": "radley@nivelacion.com",
+        "contraseña": "123",
+        "rol": "Docente"
+    }
+    ]

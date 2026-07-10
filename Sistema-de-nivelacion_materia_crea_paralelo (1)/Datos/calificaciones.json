@@ -1,0 +1,62 @@
+[
+    {
+        "cedula_estudiante": "1300000000",
+        "materia": "Programacion Orientada a Objetos",
+        "paralelo_id": "POO2",
+        "docente": "1717171717",
+        "actividades": [
+            {
+                "segmento": "Actuacion",
+                "actividad": "a",
+                "nota": 10.0,
+                "fecha": "2026-07-09 21:10"
+            },
+            {
+                "segmento": "Produccion",
+                "actividad": "b",
+                "nota": 10.0,
+                "fecha": "2026-07-09 21:11"
+            },
+            {
+                "segmento": "Practica",
+                "actividad": "c",
+                "nota": 10.0,
+                "fecha": "2026-07-09 21:12"
+            },
+            {
+                "segmento": "Evaluacion final",
+                "actividad": "d",
+                "nota": 10.0,
+                "fecha": "2026-07-09 21:12"
+            }
+        ],
+        "resumen_segmentos": {
+            "Actuacion": {
+                "promedio_10": 10.0,
+                "valor_segmento": 2.5,
+                "aporte": 2.5,
+                "cantidad_actividades": 1
+            },
+            "Produccion": {
+                "promedio_10": 10.0,
+                "valor_segmento": 2.5,
+                "aporte": 2.5,
+                "cantidad_actividades": 1
+            },
+            "Practica": {
+                "promedio_10": 10.0,
+                "valor_segmento": 1.5,
+                "aporte": 1.5,
+                "cantidad_actividades": 1
+            },
+            "Evaluacion final": {
+                "promedio_10": 10.0,
+                "valor_segmento": 3.5,
+                "aporte": 3.5,
+                "cantidad_actividades": 1
+            }
+        },
+        "nota_final": 10.0,
+        "aprobado": true
+    }
+]

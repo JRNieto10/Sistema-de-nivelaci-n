@@ -1,0 +1,46 @@
+[
+    {
+        "actividad_id": "ACT-0002",
+        "cedula_estudiante": "1300000000",
+        "archivo": "",
+        "nombre_original": "",
+        "fecha_entrega": "",
+        "estado_entrega": "Sin archivo",
+        "nota": 10.0,
+        "observacion": "",
+        "calificada_en": "2026-07-09 21:10"
+    },
+    {
+        "actividad_id": "ACT-0003",
+        "cedula_estudiante": "1300000000",
+        "archivo": "",
+        "nombre_original": "",
+        "fecha_entrega": "",
+        "estado_entrega": "Sin archivo",
+        "nota": 10.0,
+        "observacion": "",
+        "calificada_en": "2026-07-09 21:11"
+    },
+    {
+        "actividad_id": "ACT-0004",
+        "cedula_estudiante": "1300000000",
+        "archivo": "",
+        "nombre_original": "",
+        "fecha_entrega": "",
+        "estado_entrega": "Sin archivo",
+        "nota": 10.0,
+        "observacion": "",
+        "calificada_en": "2026-07-09 21:12"
+    },
+    {
+        "actividad_id": "ACT-0005",
+        "cedula_estudiante": "1300000000",
+        "archivo": "",
+        "nombre_original": "",
+        "fecha_entrega": "",
+        "estado_entrega": "Sin archivo",
+        "nota": 10.0,
+        "observacion": "",
+        "calificada_en": "2026-07-09 21:12"
+    }
+]

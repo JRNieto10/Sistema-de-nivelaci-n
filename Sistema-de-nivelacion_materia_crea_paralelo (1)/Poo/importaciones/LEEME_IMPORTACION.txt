@@ -1,0 +1,15 @@
+FORMATO PARA IMPORTAR USUARIOS
+
+El archivo CSV o Excel debe tener estas columnas:
+
+cedula,nombres,apellidos,correo,contrasena,tipo_usuario
+
+Ejemplo:
+1818181818,Juan Carlos,Perez Gomez,1818181818@nivelacion.com,1234,Estudiante
+1717171717,Ana Maria,Lopez Ruiz,1717171717@nivelacion.com,1234,Docente
+0000000001,Admin General,Sistema,admin2@nivelacion.com,1234,Personal
+
+Notas:
+- La cédula debe tener exactamente 10 dígitos.
+- tipo_usuario puede ser: Estudiante, Docente o Personal.
+- El sistema crea el usuario igual que si el administrador lo hiciera manualmente.

@@ -1,0 +1,35 @@
+[
+    {
+        "id": "IS",
+        "nombre": "Ingenieria en Software",
+        "duracion": "8",
+        "materias": [
+            {
+                "id": "IS-303",
+                "nombre": "Programacion Orientada a Objetos",
+                "creditos": 0,
+                "paralelo_id": "POO2",
+                "paralelo_nombre": "Tercero B",
+                "jornada": "Vespertina",
+                "docente_asignado": "1717171717"
+            },
+            {
+                "id": "IS-301",
+                "nombre": "Modelado Orientado a Objetos",
+                "creditos": 0,
+                "paralelo_id": "MOO2",
+                "paralelo_nombre": "Tercero B",
+                "jornada": "Vespertina",
+                "docente_asignado": "1818181818"
+            },
+            {
+                "id": "IS-302",
+                "nombre": "Redes de las Computadoras",
+                "creditos": 0,
+                "paralelo_id": "RC2",
+                "paralelo_nombre": "Tercero B",
+                "jornada": "Vespertina"
+            }
+        ]
+    }
+]
